@@ -1,0 +1,231 @@
+running experiments at 2022-11-09-18:55:02
+	exp_name: defense
+	cpu: False
+	num_tries: 20
+	num_images: 24
+	seed: 12
+	alpha: 1
+	simplified: False
+	compare: False
+	analysis: False
+	data_path: data
+	dataset: CIFAR100
+	split: train
+	distribution: random
+	start_id: 0
+	num_classes: 100
+	num_uniform_cls: 32
+	num_target_cls: 5
+	max_size: 32
+	model: resnet18
+	trained_model: False
+	iter_train: False
+	iters: 1000
+	epochs: 10
+	batch_size: 128
+	lr: 0.1
+	optimizer: SGD
+	scheduler: linear
+	weight_decay: 0.0005
+	warmup: False
+	epoch_interval: 10
+	iter_interval: 100
+	mid_save: False
+	model_path: models
+	dryrun: False
+	batchnorm: False
+	dropout: False
+	silu: False
+	leaky_relu: False
+	n_dim: 300
+	n_hidden: 1
+	defense: True
+	defense_method: sparse
+	noise_std: 0.001
+	clip_bound: 4
+	sparse_ratio: 80
+	prune_ratio: 10
+	rec_img: False
+	fix_labels: False
+	gt_labels: False
+	optim: ig
+	restarts: 1
+	cost_fn: sim
+	indices: def
+	weights: equal
+	rec_lr: None
+	rec_optimizer: adam
+	signed: False
+	boxed: False
+	scoring_choice: loss
+	init: randn
+	tv: 1e-06
+	l2: 1e-06
+	max_iterations: 8000
+	loss_thresh: 0.0001
+	save_image: False
+	log_dir: logs/defense
+	image_dir: images/defense
+
+Start Experiment 1
+start_id: 0
+1/24, Acc for this batch: 0.042
+***************************************************************
+Ground-truth Labels: 1,2,9,10,26,35,41,42,44,46,56,72,73,80,83,85,88,90,94,98,99
+Ground-truth Num of Instances: 1,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1
+Our Recovered Labels: 1,2,6,9,10,26,35,41,42,44,46,56,72,77,80,83,85,88,94,98,99 | LeAcc: 0.960
+Our Recovered Num of Instances: 1,2,3,1,1,1,1,2,2,1,3,1,1,3,1,1,1,1,1,1,1 | LnAcc: 0.950 | IRec: 0.917
+Start Experiment 2
+start_id: 11879
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 3,9,27,29,49,52,54,55,71,72,76,78,82,84,85,86,87,98
+Ground-truth Num of Instances: 3,2,1,1,1,1,1,1,1,2,1,1,2,1,2,1,1,1
+Our Recovered Labels: 3,9,27,29,46,49,52,54,55,71,72,76,78,82,84,85,86,87,98 | LeAcc: 0.990
+Our Recovered Num of Instances: 3,2,1,1,2,1,1,1,1,1,2,1,1,2,1,2,1,1,1 | LnAcc: 0.990 | IRec: 1.000
+Start Experiment 3
+start_id: 15371
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 3,5,7,10,16,30,39,44,45,51,52,54,57,64,66,74,76,79,81,83,84,86,93,94
+Ground-truth Num of Instances: 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Our Recovered Labels: 3,5,7,10,30,39,44,45,46,51,52,57,64,76,79,81,83,84,93,94 | LeAcc: 0.940
+Our Recovered Num of Instances: 1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1 | LnAcc: 0.940 | IRec: 0.792
+Start Experiment 4
+start_id: 38893
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 2,15,26,28,29,34,41,47,50,52,55,56,57,58,63,64,65,73,74,84,92,97
+Ground-truth Num of Instances: 1,1,1,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1
+Our Recovered Labels: 2,15,26,28,29,34,41,46,47,50,52,55,57,58,63,64,65,74,84,92,97 | LeAcc: 0.970
+Our Recovered Num of Instances: 1,1,1,1,3,1,1,2,1,1,1,1,2,1,1,1,1,1,1,1,1 | LnAcc: 0.960 | IRec: 0.917
+Start Experiment 5
+start_id: 8609
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 2,3,6,8,9,11,12,23,24,44,49,50,58,61,68,70,72,76,81,92,98
+Ground-truth Num of Instances: 1,1,1,1,1,1,1,1,3,2,1,1,1,1,1,1,1,1,1,1,1
+Our Recovered Labels: 2,3,6,8,9,11,12,23,24,44,46,49,58,61,68,70,72,74,76,81,92 | LeAcc: 0.960
+Our Recovered Num of Instances: 1,1,1,1,1,1,1,1,3,2,3,1,1,1,1,1,1,1,1,1,1 | LnAcc: 0.960 | IRec: 0.917
+Start Experiment 6
+start_id: 6069
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 3,4,9,12,18,25,27,29,31,45,54,56,57,62,64,78,80,86,87,88,89,95
+Ground-truth Num of Instances: 1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1
+Our Recovered Labels: 3,4,9,12,18,25,27,29,45,46,54,57,62,64,78,80,87,88,89,95 | LeAcc: 0.960
+Our Recovered Num of Instances: 1,1,1,1,1,1,1,1,2,3,1,1,1,1,1,2,1,1,1,1 | LnAcc: 0.960 | IRec: 0.875
+Start Experiment 7
+start_id: 26014
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 1,7,9,13,14,16,25,30,32,38,40,48,55,56,58,60,66,73,79,81,85
+Ground-truth Num of Instances: 1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,2,1,1,1
+Our Recovered Labels: 7,9,13,14,16,25,30,32,38,40,46,48,55,58,60,66,73,79,81,85 | LeAcc: 0.970
+Our Recovered Num of Instances: 1,1,1,1,2,1,1,1,1,1,3,1,2,1,1,1,2,1,1,1 | LnAcc: 0.970 | IRec: 0.917
+Start Experiment 8
+start_id: 33712
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 5,12,16,18,20,23,26,28,31,32,42,53,57,64,65,68,71,73,82,89,91,96
+Ground-truth Num of Instances: 1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1
+Our Recovered Labels: 5,12,18,20,23,26,28,32,42,46,53,57,64,65,68,71,74,82,89,91,96 | LeAcc: 0.950
+Our Recovered Num of Instances: 1,1,1,1,1,1,1,1,1,3,1,2,2,1,1,1,1,1,1,1,1 | LnAcc: 0.950 | IRec: 0.875
+Start Experiment 9
+start_id: 19457
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 12,13,15,16,22,24,28,31,52,53,56,63,65,66,69,71,79,87,91,96,99
+Ground-truth Num of Instances: 1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,2,1,1,1
+Our Recovered Labels: 12,13,15,16,22,24,28,46,52,53,63,65,66,69,71,79,87,91,96,99 | LeAcc: 0.970
+Our Recovered Num of Instances: 1,1,2,1,1,1,1,3,1,2,1,1,1,1,1,1,2,1,1,1 | LnAcc: 0.970 | IRec: 0.917
+Start Experiment 10
+start_id: 23435
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 3,4,5,6,8,11,13,14,17,18,20,23,38,41,66,69,70,72,78,88,91,92
+Ground-truth Num of Instances: 2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1
+Our Recovered Labels: 3,4,5,6,8,11,13,14,18,20,23,38,41,46,69,72,78,88,91,92 | LeAcc: 0.960
+Our Recovered Num of Instances: 2,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,2,1,1 | LnAcc: 0.960 | IRec: 0.875
+Start Experiment 11
+start_id: 17924
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 1,4,7,10,12,14,17,19,28,29,36,45,57,67,73,76,77,79,85,91,98
+Ground-truth Num of Instances: 1,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,1,1,2,1,1
+Our Recovered Labels: 1,4,7,10,12,14,19,28,29,36,43,45,46,57,67,73,74,76,79,85,91,98 | LeAcc: 0.950
+Our Recovered Num of Instances: 1,1,1,1,1,1,1,1,1,1,1,2,7,1,2,2,1,1,1,2,1,1 | LnAcc: 0.940 | IRec: 0.917
+Start Experiment 12
+start_id: 4967
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 1,15,23,36,48,52,56,57,60,61,65,67,72,74,76,79,84,86,87,91,93,97,99
+Ground-truth Num of Instances: 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1
+Our Recovered Labels: 13,15,23,48,52,57,60,61,65,67,72,74,76,79,84,86,87,91,93,97,99 | LeAcc: 0.960
+Our Recovered Num of Instances: 5,1,1,1,1,1,1,1,1,1,1,5,1,1,1,2,1,1,1,1,1 | LnAcc: 0.950 | IRec: 0.875
+Start Experiment 13
+start_id: 43044
+1/24, Acc for this batch: 0.042
+***************************************************************
+Ground-truth Labels: 1,4,10,11,16,23,26,31,34,46,58,62,68,70,72,77,80,81,83,85,90,98
+Ground-truth Num of Instances: 2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Our Recovered Labels: 1,4,10,11,16,23,26,30,31,34,43,46,58,62,68,70,72,80,81,83,85,98 | LeAcc: 0.960
+Our Recovered Num of Instances: 2,1,1,2,1,1,1,3,1,1,3,3,1,1,1,1,1,1,1,1,1,1 | LnAcc: 0.950 | IRec: 0.917
+Start Experiment 14
+start_id: 46524
+1/24, Acc for this batch: 0.042
+***************************************************************
+Ground-truth Labels: 0,2,15,22,23,27,30,33,41,44,46,49,50,56,64,68,69,70,78,83,93,98
+Ground-truth Num of Instances: 1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2
+Our Recovered Labels: 0,2,15,22,23,27,30,33,39,41,43,44,46,49,50,64,68,69,70,78,83,93,98 | LeAcc: 0.970
+Our Recovered Num of Instances: 1,1,1,1,1,1,1,1,3,1,3,2,3,1,1,1,1,1,1,1,1,1,2 | LnAcc: 0.960 | IRec: 0.958
+Start Experiment 15
+start_id: 33194
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 0,11,12,13,34,41,49,50,52,59,65,66,67,72,73,75,77,84,86,90,98
+Ground-truth Num of Instances: 1,1,2,1,2,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1
+Our Recovered Labels: 0,11,12,13,34,41,46,49,50,52,59,65,66,67,72,73,74,75,84,86,98 | LeAcc: 0.960
+Our Recovered Num of Instances: 1,1,2,1,2,1,3,1,1,1,1,2,1,1,1,1,1,1,1,1,1 | LnAcc: 0.960 | IRec: 0.917
+Start Experiment 16
+start_id: 11573
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 14,15,16,19,25,32,40,41,47,48,54,62,71,77,91,92,93,94,95,97
+Ground-truth Num of Instances: 1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,2,1,1
+Our Recovered Labels: 14,15,16,19,25,32,40,41,43,46,47,48,54,62,71,73,74,91,92,93,94,95,97 | LeAcc: 0.950
+Our Recovered Num of Instances: 1,2,1,1,1,1,1,1,1,9,1,1,1,1,1,1,1,2,1,2,2,1,1 | LnAcc: 0.950 | IRec: 0.958
+Start Experiment 17
+start_id: 41244
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 1,3,6,9,10,13,16,17,22,25,32,33,48,50,62,67,70,76,80,81,87,94,97
+Ground-truth Num of Instances: 1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Our Recovered Labels: 3,6,9,10,13,16,22,25,32,46,48,50,62,67,70,74,76,81,87,94,97 | LeAcc: 0.940
+Our Recovered Num of Instances: 2,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1 | LnAcc: 0.940 | IRec: 0.833
+Start Experiment 18
+start_id: 31266
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 1,3,10,15,28,29,34,35,37,38,61,65,69,70,73,76,89,91
+Ground-truth Num of Instances: 2,1,1,1,1,1,2,1,1,1,2,2,2,1,2,1,1,1
+Our Recovered Labels: 1,3,10,15,28,29,34,35,37,38,46,61,65,69,70,73,76,89,91 | LeAcc: 0.990
+Our Recovered Num of Instances: 2,1,1,1,1,1,2,1,1,1,2,2,2,2,1,2,1,1,1 | LnAcc: 0.990 | IRec: 1.000
+Start Experiment 19
+start_id: 8229
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 0,4,15,18,25,27,33,36,40,43,50,51,59,60,63,67,69,72,83,85,87,88,94,98
+Ground-truth Num of Instances: 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Our Recovered Labels: 4,15,18,25,27,36,40,46,51,59,60,63,67,69,72,73,83,85,87,88,94 | LeAcc: 0.930
+Our Recovered Num of Instances: 1,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,1,1,1 | LnAcc: 0.930 | IRec: 0.792
+Start Experiment 20
+start_id: 24115
+0/24, Acc for this batch: 0.000
+***************************************************************
+Ground-truth Labels: 5,11,12,19,26,28,33,36,43,49,51,53,61,68,72,73,74,75,79,85,94,98
+Ground-truth Num of Instances: 1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1
+Our Recovered Labels: 5,11,12,19,26,28,36,46,49,51,53,61,68,72,73,75,79,85,94,98 | LeAcc: 0.960
+Our Recovered Num of Instances: 1,1,1,1,1,1,1,3,1,1,2,1,1,1,1,1,1,1,2,1 | LnAcc: 0.960 | IRec: 0.875
+---------------------------------------------------------------
+Mean Ours LeAcc: 0.960 | Mean Ours LnAcc: 0.957 | Mean Ours IRec: 0.902

@@ -1,0 +1,235 @@
+running experiments at 2022-11-13-15:48:14
+	exp_name: extreme_distribution
+	cpu: False
+	num_tries: 20
+	num_images: 648
+	seed: 12
+	alpha: 1
+	simplified: False
+	compare: False
+	estimate: False
+	analysis: False
+	ratio: 0.0
+	data_path: data
+	dataset: CIFAR100
+	split: train
+	distribution: custom_imbalanced
+	start_id: 0
+	num_classes: 100
+	num_uniform_cls: 32
+	num_target_cls: 5
+	max_size: 32
+	model: vgg16
+	trained_model: True
+	iter_train: False
+	iters: 1000
+	epochs: 100
+	batch_size: 128
+	lr: 0.1
+	optimizer: SGD
+	scheduler: linear
+	weight_decay: 0.0005
+	warmup: False
+	epoch_interval: 10
+	iter_interval: 100
+	mid_save: False
+	model_path: models
+	dryrun: False
+	batchnorm: False
+	dropout: False
+	silu: False
+	leaky_relu: False
+	n_dim: 300
+	n_hidden: 1
+	defense: False
+	defense_method: dp
+	noise_std: 0.001
+	clip_bound: 4
+	sparse_ratio: 10
+	prune_ratio: 10
+	rec_img: False
+	fix_labels: False
+	gt_labels: False
+	optim: ig
+	restarts: 1
+	cost_fn: sim
+	indices: def
+	weights: equal
+	rec_lr: None
+	rec_optimizer: adam
+	signed: False
+	boxed: False
+	scoring_choice: loss
+	init: randn
+	tv: 1e-06
+	l2: 1e-06
+	max_iterations: 8000
+	loss_thresh: 0.0001
+	save_image: False
+	log_dir: logs/extreme_distribution
+	image_dir: images/extreme_distribution
+
+Model loaded from file vgg16_CIFAR100_Epoch100.pth.
+Start Experiment 1
+start_id: 0
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 4,638,9 | LnAcc: 0.970 | IRec: 0.988
+Start Experiment 2
+start_id: 14513
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 6,644,1 | LnAcc: 0.980 | IRec: 0.997
+Start Experiment 3
+start_id: 30093
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 538,113,1 | LnAcc: 0.980 | IRec: 0.177
+Start Experiment 4
+start_id: 42725
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels:  | LeAcc: 0.970
+Our Recovered Num of Instances:  | LnAcc: 0.970 | IRec: 0.000
+Start Experiment 5
+start_id: 9646
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 10,639,1 | LnAcc: 0.980 | IRec: 0.989
+Start Experiment 6
+start_id: 22468
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 55,591,5 | LnAcc: 0.970 | IRec: 0.915
+Start Experiment 7
+start_id: 36803
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 5,292,354 | LnAcc: 0.970 | IRec: 0.454
+Start Experiment 8
+start_id: 2558
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels:  | LeAcc: 0.970
+Our Recovered Num of Instances:  | LnAcc: 0.970 | IRec: 0.000
+Start Experiment 9
+start_id: 17229
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 4,602,45 | LnAcc: 0.970 | IRec: 0.932
+Start Experiment 10
+start_id: 31960
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 8,158,486 | LnAcc: 0.970 | IRec: 0.247
+Start Experiment 11
+start_id: 44939
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 14,635,1 | LnAcc: 0.980 | IRec: 0.983
+Start Experiment 12
+start_id: 11133
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 4,645,2 | LnAcc: 0.970 | IRec: 0.998
+Start Experiment 13
+start_id: 25396
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18 | LeAcc: 0.990
+Our Recovered Num of Instances: 28,623 | LnAcc: 0.970 | IRec: 0.963
+Start Experiment 14
+start_id: 38677
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 127,133,392 | LnAcc: 0.970 | IRec: 0.208
+Start Experiment 15
+start_id: 4787
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 4,644,3 | LnAcc: 0.970 | IRec: 0.997
+Start Experiment 16
+start_id: 19493
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels:  | LeAcc: 0.970
+Our Recovered Num of Instances:  | LnAcc: 0.970 | IRec: 0.000
+Start Experiment 17
+start_id: 33289
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 92 | LeAcc: 0.980
+Our Recovered Num of Instances: 1 | LnAcc: 0.980 | IRec: 0.002
+Start Experiment 18
+start_id: 47091
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 161,488,1 | LnAcc: 0.980 | IRec: 0.756
+Start Experiment 19
+start_id: 13173
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,18,92 | LeAcc: 1.000
+Our Recovered Num of Instances: 55,594,2 | LnAcc: 0.970 | IRec: 0.920
+Start Experiment 20
+start_id: 27898
+648/648, Acc for this batch: 1.000
+***************************************************************
+Ground-truth Labels: 0,18,92
+Ground-truth Num of Instances: 1,646,1
+Our Recovered Labels: 0,92 | LeAcc: 0.990
+Our Recovered Num of Instances: 1,2 | LnAcc: 0.980 | IRec: 0.003
+---------------------------------------------------------------
+Mean Ours LeAcc: 0.993 | Mean Ours LnAcc: 0.974 | Mean Ours IRec: 0.576
+Mean Rec Instances: Class 0-51, Class 18-371, Class 92-65

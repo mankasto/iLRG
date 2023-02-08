@@ -1,0 +1,514 @@
+running experiments at 2022-09-03-19:08:02
+	log_dir: exp_res
+	cpu: False
+	num_tries: 50
+	num_images: 8
+	seed: 12
+	alpha: 1
+	simplified: False
+	analysis: False
+	data_path: data
+	dataset: MNIST_GRAY
+	split: train
+	distribution: random
+	start_id: 0
+	num_classes: 10
+	num_uniform_cls: 32
+	model: dnn
+	trained_model: False
+	epochs: 10
+	batch_size: 128
+	optimizer: SGD
+	lr: 0.1
+	scheduler: linear
+	weight_decay: 0.0005
+	warmup: False
+	valid_interval: 1
+	mid_save: False
+	model_path: models
+	dryrun: False
+	batchnorm: False
+	dropout: False
+	silu: False
+	dim: 300
+	n_hidden: 1
+	defense: False
+	defense_method: dp
+	noise_std: 0.001
+	clip_bound: 4
+	sparse_ratio: 10
+	prune_ratio: 10
+	rec_img: False
+	fix_labels: False
+	gt_labels: False
+	optim: ig
+	restarts: 1
+	cost_fn: sim
+	indices: def
+	weights: equal
+	rec_lr: None
+	rec_optimizer: adam
+	signed: False
+	boxed: False
+	scoring_choice: loss
+	init: randn
+	tv: 1e-06
+	l2: 1e-06
+	max_iterations: 8000
+	loss_thresh: 0.0001
+	save_image: False
+	image_path: images
+	table_path: tables
+
+Start Experiment 1
+***************************************************************
+Ground-truth Labels: 0,3,4,5,8
+Ground-truth Num of Instances: 3,1,2,1,1
+Our Recovered Labels: 0,3,4,5,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 3,1,2,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,3,4,5,8 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,3,4,5,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,3,4,5,6,7,8,9 | LeAcc: 0.700
+Start Experiment 2
+***************************************************************
+Ground-truth Labels: 0,1,2,5,7,9
+Ground-truth Num of Instances: 1,1,1,2,1,2
+Our Recovered Labels: 0,1,2,5,7,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,2,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,2,5,7,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,1,2,5,7,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,4,5,7,8,9 | LeAcc: 0.800
+Start Experiment 3
+***************************************************************
+Ground-truth Labels: 0,4,5,7,9
+Ground-truth Num of Instances: 1,2,1,1,3
+Our Recovered Labels: 0,4,5,7,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,2,1,1,3 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,4,5,7,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,4,5,7,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,2,3,4,5,7,8,9 | LeAcc: 0.700
+Start Experiment 4
+***************************************************************
+Ground-truth Labels: 0,1,4,5,8,9
+Ground-truth Num of Instances: 1,1,1,2,2,1
+Our Recovered Labels: 0,1,4,5,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,2,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,4,5,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,1,4,5,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,4,5,6,7,8,9 | LeAcc: 0.800
+Start Experiment 5
+***************************************************************
+Ground-truth Labels: 0,2,3,5,9
+Ground-truth Num of Instances: 1,1,2,1,3
+Our Recovered Labels: 0,2,3,5,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,1,3 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,2,3,9 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,2,3,5,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,4,5,7,9 | LeAcc: 0.700
+Start Experiment 6
+***************************************************************
+Ground-truth Labels: 4,5,6,7,8
+Ground-truth Num of Instances: 1,1,1,1,4
+Our Recovered Labels: 4,5,6,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,1,4 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 4,5,6,7,8 | LeAcc: 1.000
+GradInversion Recovered Labels: 4,5,6,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,3,4,5,6,7,8 | LeAcc: 0.700
+Start Experiment 7
+***************************************************************
+Ground-truth Labels: 1,2,3,4,5,6,7
+Ground-truth Num of Instances: 1,1,1,1,1,1,2
+Our Recovered Labels: 1,2,3,4,5,6,7 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,1,1,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,2,3,4,6,7 | LeAcc: 0.900
+GradInversion Recovered Labels: 1,2,3,4,5,6,7 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,3,4,5,6,7,8 | LeAcc: 0.900
+Start Experiment 8
+***************************************************************
+Ground-truth Labels: 0,1,6,8,9
+Ground-truth Num of Instances: 3,1,2,1,1
+Our Recovered Labels: 0,1,6,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 3,1,2,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,6,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,1,6,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,3,4,6,7,8,9 | LeAcc: 0.700
+Start Experiment 9
+***************************************************************
+Ground-truth Labels: 2,3,5,6,7,9
+Ground-truth Num of Instances: 2,1,1,1,2,1
+Our Recovered Labels: 2,3,5,6,7,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,1,1,1,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 2,3,6,7,9 | LeAcc: 0.900
+GradInversion Recovered Labels: 2,3,5,6,7,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,5,6,7,9 | LeAcc: 0.800
+Start Experiment 10
+***************************************************************
+Ground-truth Labels: 1,2,3,5,6,7,9
+Ground-truth Num of Instances: 1,2,1,1,1,1,1
+Our Recovered Labels: 1,2,3,5,6,7,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,2,1,1,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,2,3,5,6,7,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,2,3,5,6,7,9 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,3,4,5,6,7,9 | LeAcc: 0.900
+Start Experiment 11
+***************************************************************
+Ground-truth Labels: 1,2,4,7,8,9
+Ground-truth Num of Instances: 1,1,1,3,1,1
+Our Recovered Labels: 1,2,4,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,3,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,2,4,7,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,2,4,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,3,4,5,7,8,9 | LeAcc: 0.800
+Start Experiment 12
+***************************************************************
+Ground-truth Labels: 2,4,7,8,9
+Ground-truth Num of Instances: 2,1,2,2,1
+Our Recovered Labels: 2,4,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,1,2,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 2,7,8,9 | LeAcc: 0.900
+GradInversion Recovered Labels: 2,4,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,4,5,6,7,8,9 | LeAcc: 0.700
+Start Experiment 13
+***************************************************************
+Ground-truth Labels: 2,3,5,6,7,8
+Ground-truth Num of Instances: 1,2,1,1,2,1
+Our Recovered Labels: 2,3,5,6,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,2,1,1,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 2,3,5,6,7,8 | LeAcc: 1.000
+GradInversion Recovered Labels: 2,3,5,6,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,2,3,4,5,6,7,8 | LeAcc: 0.800
+Start Experiment 14
+***************************************************************
+Ground-truth Labels: 0,1,3,6,8,9
+Ground-truth Num of Instances: 2,2,1,1,1,1
+Our Recovered Labels: 0,1,3,6,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,2,1,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,3,6,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,1,3,6,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,5,6,8,9 | LeAcc: 0.800
+Start Experiment 15
+***************************************************************
+Ground-truth Labels: 0,1,3,4,5,8
+Ground-truth Num of Instances: 3,1,1,1,1,1
+Our Recovered Labels: 0,1,3,4,5,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 3,1,1,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,3,4,8 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,1,3,4,5,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,4,5,7,8 | LeAcc: 0.800
+Start Experiment 16
+***************************************************************
+Ground-truth Labels: 1,3,5,6,7,8,9
+Ground-truth Num of Instances: 1,1,1,2,1,1,1
+Our Recovered Labels: 1,3,5,6,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,2,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,3,5,6,7,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,3,5,6,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 1,3,4,5,6,7,8,9 | LeAcc: 0.900
+Start Experiment 17
+***************************************************************
+Ground-truth Labels: 3,4,5,6,8,9
+Ground-truth Num of Instances: 1,2,1,1,1,2
+Our Recovered Labels: 3,4,5,6,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,2,1,1,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 3,4,5,6,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 3,4,5,6,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,2,3,4,5,6,8,9 | LeAcc: 0.800
+Start Experiment 18
+***************************************************************
+Ground-truth Labels: 1,5,6,7,8,9
+Ground-truth Num of Instances: 1,1,2,1,1,2
+Our Recovered Labels: 1,5,6,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,1,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,5,6,7,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,5,6,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,4,5,6,7,8,9 | LeAcc: 0.800
+Start Experiment 19
+***************************************************************
+Ground-truth Labels: 0,2,3,5,8,9
+Ground-truth Num of Instances: 1,2,2,1,1,1
+Our Recovered Labels: 0,2,3,5,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,2,2,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,2,3,8,9 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,2,3,5,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,5,7,8,9 | LeAcc: 0.800
+Start Experiment 20
+***************************************************************
+Ground-truth Labels: 0,1,3,5,6,7,8
+Ground-truth Num of Instances: 1,1,1,1,1,2,1
+Our Recovered Labels: 0,1,3,5,6,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,1,1,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,3,6,7,8 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,1,3,5,6,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,5,6,7,8 | LeAcc: 0.900
+Start Experiment 21
+***************************************************************
+Ground-truth Labels: 0,2,3,4,8,9
+Ground-truth Num of Instances: 1,2,1,2,1,1
+Our Recovered Labels: 0,2,3,4,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,2,1,2,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,2,3,4,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,2,3,4,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,2,3,4,5,6,8,9 | LeAcc: 0.800
+Start Experiment 22
+***************************************************************
+Ground-truth Labels: 1,2,3,5,8,9
+Ground-truth Num of Instances: 1,2,2,1,1,1
+Our Recovered Labels: 1,2,3,5,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,2,2,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 2,3,5,9 | LeAcc: 0.800
+GradInversion Recovered Labels: 1,2,3,5,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,5,7,8,9 | LeAcc: 0.800
+Start Experiment 23
+***************************************************************
+Ground-truth Labels: 0,2,5,6,7,8,9
+Ground-truth Num of Instances: 1,1,1,1,1,1,2
+Our Recovered Labels: 0,2,5,6,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,1,1,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,5,6,7,8,9 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,2,5,6,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,2,4,5,6,7,8,9 | LeAcc: 0.900
+Start Experiment 24
+***************************************************************
+Ground-truth Labels: 0,1,2,3,5,7
+Ground-truth Num of Instances: 2,2,1,1,1,1
+Our Recovered Labels: 0,1,2,3,5,7 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,2,1,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,2,3,5,7 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,1,2,3,5,7 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,4,5,7,9 | LeAcc: 0.800
+Start Experiment 25
+***************************************************************
+Ground-truth Labels: 1,2,4,5,6,9
+Ground-truth Num of Instances: 1,2,2,1,1,1
+Our Recovered Labels: 1,2,4,5,6,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,2,2,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,2,4,5,6,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,2,4,5,6,9 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,3,4,5,6,8,9 | LeAcc: 0.800
+Start Experiment 26
+***************************************************************
+Ground-truth Labels: 4,5,6,7
+Ground-truth Num of Instances: 2,1,4,1
+Our Recovered Labels: 4,5,6,7 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,1,4,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 4,5,6,7 | LeAcc: 1.000
+GradInversion Recovered Labels: 4,5,6,7 | LeAcc: 1.000
+SVD Recovered Labels: 0,2,4,5,6,7,8,9 | LeAcc: 0.600
+Start Experiment 27
+***************************************************************
+Ground-truth Labels: 0,4,5,7,8,9
+Ground-truth Num of Instances: 1,1,2,1,2,1
+Our Recovered Labels: 0,4,5,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,1,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,4,5,7,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,4,5,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,3,4,5,6,7,8,9 | LeAcc: 0.800
+Start Experiment 28
+***************************************************************
+Ground-truth Labels: 0,1,2,4,6
+Ground-truth Num of Instances: 3,2,1,1,1
+Our Recovered Labels: 0,1,2,4,6 | LeAcc: 1.000
+Our Recovered Num of Instances: 3,2,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,2,4,6 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,1,2,4,6 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,4,6,7,8,9 | LeAcc: 0.700
+Start Experiment 29
+***************************************************************
+Ground-truth Labels: 0,1,4,5,7,8
+Ground-truth Num of Instances: 3,1,1,1,1,1
+Our Recovered Labels: 0,1,4,5,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 3,1,1,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,4,7,8 | LeAcc: 0.800
+GradInversion Recovered Labels: 0,1,4,5,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,4,5,6,7,8 | LeAcc: 0.800
+Start Experiment 30
+***************************************************************
+Ground-truth Labels: 0,1,2,3,7,8
+Ground-truth Num of Instances: 1,1,1,2,1,2
+Our Recovered Labels: 0,1,2,3,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,2,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,2,3,7,8 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,1,2,3,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,5,7,8,9 | LeAcc: 0.800
+Start Experiment 31
+***************************************************************
+Ground-truth Labels: 1,2,3,4,5,7
+Ground-truth Num of Instances: 1,1,2,1,2,1
+Our Recovered Labels: 1,2,3,4,5,7 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,1,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,2,3,4,5,7 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,2,3,4,5,7 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,4,5,7,9 | LeAcc: 0.800
+Start Experiment 32
+***************************************************************
+Ground-truth Labels: 0,2,4,8
+Ground-truth Num of Instances: 1,3,2,2
+Our Recovered Labels: 0,2,4,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,3,2,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,2,4,8 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,2,4,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,4,6,8,9 | LeAcc: 0.600
+Start Experiment 33
+***************************************************************
+Ground-truth Labels: 3,4,5,6,7
+Ground-truth Num of Instances: 2,1,1,2,2
+Our Recovered Labels: 3,4,5,6,7 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,1,1,2,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 3,4,5,6,7 | LeAcc: 1.000
+GradInversion Recovered Labels: 3,4,5,6,7 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,3,4,5,6,7,9 | LeAcc: 0.700
+Start Experiment 34
+***************************************************************
+Ground-truth Labels: 1,2,5,7,8,9
+Ground-truth Num of Instances: 1,1,2,1,1,2
+Our Recovered Labels: 1,2,5,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,1,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,2,5,7,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,2,5,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,3,4,5,7,8,9 | LeAcc: 0.800
+Start Experiment 35
+***************************************************************
+Ground-truth Labels: 0,1,3,4,5,7,8
+Ground-truth Num of Instances: 1,1,2,1,1,1,1
+Our Recovered Labels: 0,1,3,4,5,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,1,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,3,4,5,7,8 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,1,3,4,5,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,3,4,5,7,8,9 | LeAcc: 0.900
+Start Experiment 36
+***************************************************************
+Ground-truth Labels: 0,2,5,7,8
+Ground-truth Num of Instances: 2,1,1,2,2
+Our Recovered Labels: 0,2,5,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,1,1,2,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,5,7,8 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,2,5,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,2,4,5,6,7,8,9 | LeAcc: 0.700
+Start Experiment 37
+***************************************************************
+Ground-truth Labels: 1,2,3,4,7,8
+Ground-truth Num of Instances: 1,1,2,1,2,1
+Our Recovered Labels: 1,2,3,4,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,1,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,2,3,4,7,8 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,2,3,4,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,4,7,8,9 | LeAcc: 0.800
+Start Experiment 38
+***************************************************************
+Ground-truth Labels: 2,4,5,6,7,8
+Ground-truth Num of Instances: 2,1,1,1,1,2
+Our Recovered Labels: 2,4,5,6,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,1,1,1,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 2,4,5,6,7,8 | LeAcc: 1.000
+GradInversion Recovered Labels: 2,4,5,6,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,4,5,6,7,8,9 | LeAcc: 0.800
+Start Experiment 39
+***************************************************************
+Ground-truth Labels: 3,4,5,7,8,9
+Ground-truth Num of Instances: 1,1,1,2,2,1
+Our Recovered Labels: 3,4,5,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,2,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 3,4,5,7,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 3,4,5,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,3,4,5,7,8,9 | LeAcc: 0.800
+Start Experiment 40
+***************************************************************
+Ground-truth Labels: 0,2,5,6,7,8
+Ground-truth Num of Instances: 1,1,2,1,2,1
+Our Recovered Labels: 0,2,5,6,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,1,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,2,5,6,7,8 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,2,5,6,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,2,3,5,6,7,8,9 | LeAcc: 0.800
+Start Experiment 41
+***************************************************************
+Ground-truth Labels: 0,1,2,3,4,5
+Ground-truth Num of Instances: 1,1,1,2,1,2
+Our Recovered Labels: 0,1,2,3,4,5 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,2,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,2,3,4,5 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,1,2,3,4,5 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,4,5,7,8 | LeAcc: 0.800
+Start Experiment 42
+***************************************************************
+Ground-truth Labels: 0,1,3,4,5,6,7
+Ground-truth Num of Instances: 1,1,1,1,2,1,1
+Our Recovered Labels: 0,1,3,4,5,6,7 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,1,1,2,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,3,4,5,6,7 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,1,3,4,5,6,7 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,4,5,6,7 | LeAcc: 0.900
+Start Experiment 43
+***************************************************************
+Ground-truth Labels: 2,3,5,7,8
+Ground-truth Num of Instances: 1,1,2,3,1
+Our Recovered Labels: 2,3,5,7,8 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,3,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 2,3,5,7,8 | LeAcc: 1.000
+GradInversion Recovered Labels: 2,3,5,7,8 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,5,7,8,9 | LeAcc: 0.700
+Start Experiment 44
+***************************************************************
+Ground-truth Labels: 1,2,5,6,7,8,9
+Ground-truth Num of Instances: 1,1,2,1,1,1,1
+Our Recovered Labels: 1,2,5,6,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,2,1,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 2,5,6,7,8,9 | LeAcc: 0.900
+GradInversion Recovered Labels: 1,2,5,6,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,3,5,6,7,8,9 | LeAcc: 0.900
+Start Experiment 45
+***************************************************************
+Ground-truth Labels: 0,2,5,6,8,9
+Ground-truth Num of Instances: 2,1,2,1,1,1
+Our Recovered Labels: 0,2,5,6,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,1,2,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,2,5,6,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,2,5,6,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,2,4,5,6,7,8,9 | LeAcc: 0.800
+Start Experiment 46
+***************************************************************
+Ground-truth Labels: 0,3,5,6,9
+Ground-truth Num of Instances: 1,3,1,1,2
+Our Recovered Labels: 0,3,5,6,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,3,1,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,3,5,9 | LeAcc: 0.900
+GradInversion Recovered Labels: 0,3,5,6,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,3,4,5,6,8,9 | LeAcc: 0.700
+Start Experiment 47
+***************************************************************
+Ground-truth Labels: 1,2,3,4,6,9
+Ground-truth Num of Instances: 2,1,1,1,1,2
+Our Recovered Labels: 1,2,3,4,6,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,1,1,1,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,2,3,4,6,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,2,3,4,6,9 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,3,4,6,7,8,9 | LeAcc: 0.800
+Start Experiment 48
+***************************************************************
+Ground-truth Labels: 2,3,4,5,7,8,9
+Ground-truth Num of Instances: 1,2,1,1,1,1,1
+Our Recovered Labels: 2,3,4,5,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,2,1,1,1,1,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 2,3,4,5,7,8,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 2,3,4,5,7,8,9 | LeAcc: 1.000
+SVD Recovered Labels: 2,3,4,5,6,7,8,9 | LeAcc: 0.900
+Start Experiment 49
+***************************************************************
+Ground-truth Labels: 0,1,3,4,7,9
+Ground-truth Num of Instances: 2,1,1,1,1,2
+Our Recovered Labels: 0,1,3,4,7,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 2,1,1,1,1,2 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 0,1,3,4,7,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 0,1,3,4,7,9 | LeAcc: 1.000
+SVD Recovered Labels: 0,1,2,3,4,7,8,9 | LeAcc: 0.800
+Start Experiment 50
+***************************************************************
+Ground-truth Labels: 1,2,3,6,9
+Ground-truth Num of Instances: 1,1,3,2,1
+Our Recovered Labels: 1,2,3,6,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 1,1,3,2,1 | LnAcc: 1.000 | IRec: 1.000
+iDLG Recovered Labels: 1,2,3,6,9 | LeAcc: 1.000
+GradInversion Recovered Labels: 1,2,3,6,9 | LeAcc: 1.000
+SVD Recovered Labels: 1,2,3,5,6,7,8,9 | LeAcc: 0.700
+---------------------------------------------------------------
+Mean iDLG LeAcc: 0.964 | Mean GI LeAcc: 1.000 | Mean SVD LeAcc: 0.786 | Mean Ours LeAcc: 1.000 | Mean Ours LnAcc: 1.000 | Mean Ours IRec: 1.000
