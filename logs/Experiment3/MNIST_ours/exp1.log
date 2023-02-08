@@ -1,0 +1,81 @@
+running experiments at 2022-09-04-21:00:57
+	log_dir: exp_res
+	cpu: False
+	num_tries: 1
+	num_images: 50
+	seed: 12
+	alpha: 1
+	simplified: False
+	compare: False
+	analysis: False
+	ablation1: False
+	ablation2: False
+	ablation3: False
+	ablation4: False
+	data_path: data
+	dataset: MNIST_GRAY
+	split: train
+	distribution: random
+	start_id: 0
+	num_classes: 10
+	num_uniform_cls: 32
+	model: dnn
+	trained_model: False
+	iter_train: False
+	epochs: 10
+	iters: 1000
+	batch_size: 128
+	optimizer: SGD
+	lr: 0.1
+	scheduler: linear
+	weight_decay: 0.0005
+	warmup: False
+	epoch_interval: 10
+	iter_interval: 100
+	mid_save: False
+	model_path: models
+	dryrun: False
+	batchnorm: False
+	dropout: False
+	silu: False
+	dim: 300
+	n_hidden: 1
+	defense: False
+	defense_method: dp
+	noise_std: 0.001
+	clip_bound: 4
+	sparse_ratio: 10
+	prune_ratio: 10
+	rec_img: True
+	fix_labels: True
+	gt_labels: False
+	optim: ig
+	restarts: 3
+	cost_fn: sim
+	indices: def
+	weights: equal
+	rec_lr: None
+	rec_optimizer: adam
+	signed: True
+	boxed: True
+	scoring_choice: loss
+	init: randn
+	tv: 0.0001
+	l2: 1e-06
+	max_iterations: 8000
+	loss_thresh: 0.0001
+	save_image: True
+	image_path: images
+	table_path: tables
+
+Start Experiment 1
+***************************************************************
+Ground-truth Labels: 0,1,2,3,4,5,6,7,8,9
+Ground-truth Num of Instances: 7,2,2,3,6,9,1,4,7,9
+Our Recovered Labels: 0,1,2,3,4,5,6,7,8,9 | LeAcc: 1.000
+Our Recovered Num of Instances: 7,2,2,3,6,9,1,4,7,9 | LnAcc: 1.000 | IRec: 1.000
+ 
+Start reconstructing images
+End reconstructing images
+---------------------------------------------------------------
+Mean Ours LeAcc: 1.000 | Mean Ours LnAcc: 1.000 | Mean Ours IRec: 1.000

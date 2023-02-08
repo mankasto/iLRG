@@ -1,0 +1,365 @@
+running experiments at 2022-09-03-21:08:18
+	log_dir: exp_res
+	cpu: False
+	num_tries: 50
+	num_images: 128
+	seed: 12
+	alpha: 1
+	simplified: False
+	compare: False
+	analysis: False
+	data_path: data
+	dataset: CIFAR100
+	split: train
+	distribution: balanced
+	start_id: 0
+	num_classes: 100
+	num_uniform_cls: 4
+	model: lenet5
+	trained_model: False
+	epochs: 10
+	batch_size: 128
+	optimizer: SGD
+	lr: 0.1
+	scheduler: linear
+	weight_decay: 0.0005
+	warmup: False
+	valid_interval: 1
+	mid_save: False
+	model_path: models
+	dryrun: False
+	batchnorm: False
+	dropout: False
+	silu: False
+	dim: 300
+	n_hidden: 1
+	defense: False
+	defense_method: dp
+	noise_std: 0.001
+	clip_bound: 4
+	sparse_ratio: 10
+	prune_ratio: 10
+	rec_img: False
+	fix_labels: False
+	gt_labels: False
+	optim: ig
+	restarts: 1
+	cost_fn: sim
+	indices: def
+	weights: equal
+	rec_lr: None
+	rec_optimizer: adam
+	signed: False
+	boxed: False
+	scoring_choice: loss
+	init: randn
+	tv: 1e-06
+	l2: 1e-06
+	max_iterations: 8000
+	loss_thresh: 0.0001
+	save_image: False
+	image_path: images
+	table_path: tables
+
+Start Experiment 1
+***************************************************************
+Ground-truth Labels: 15,23,57,84
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 15,23,57,84 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 2
+***************************************************************
+Ground-truth Labels: 25,30,42,62
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 25,30,42,62 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 3
+***************************************************************
+Ground-truth Labels: 23,61,63,80
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 23,61,63,80 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 4
+***************************************************************
+Ground-truth Labels: 25,33,37,58
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 25,33,37,58 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 5
+***************************************************************
+Ground-truth Labels: 15,32,41,88
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 15,32,41,88 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 6
+***************************************************************
+Ground-truth Labels: 22,66,86,97
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 22,66,86,97 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 7
+***************************************************************
+Ground-truth Labels: 21,25,30,94
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 21,25,30,94 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 8
+***************************************************************
+Ground-truth Labels: 25,46,64,73
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 25,46,64,73 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 9
+***************************************************************
+Ground-truth Labels: 27,63,86,96
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 27,63,86,96 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 10
+***************************************************************
+Ground-truth Labels: 0,33,38,91
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 0,33,38,91 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 11
+***************************************************************
+Ground-truth Labels: 28,43,51,98
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 28,43,51,98 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 12
+***************************************************************
+Ground-truth Labels: 44,51,68,93
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 44,51,68,93 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 13
+***************************************************************
+Ground-truth Labels: 34,67,73,75
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 34,67,73,75 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 14
+***************************************************************
+Ground-truth Labels: 34,38,76,90
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 34,38,76,90 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 15
+***************************************************************
+Ground-truth Labels: 14,36,61,70
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 14,36,61,70 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 16
+***************************************************************
+Ground-truth Labels: 18,63,64,72
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 18,63,64,72 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 17
+***************************************************************
+Ground-truth Labels: 20,24,80,87
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 20,24,80,87 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 18
+***************************************************************
+Ground-truth Labels: 26,55,82,87
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 26,55,82,87 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 19
+***************************************************************
+Ground-truth Labels: 16,52,61,65
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 16,52,61,65 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 20
+***************************************************************
+Ground-truth Labels: 12,25,73,90
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 12,25,73,90 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 21
+***************************************************************
+Ground-truth Labels: 33,43,68,75
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 33,43,68,75 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 22
+***************************************************************
+Ground-truth Labels: 11,60,69,84
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 11,60,69,84 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 23
+***************************************************************
+Ground-truth Labels: 18,19,61,62
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 18,19,61,62 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 24
+***************************************************************
+Ground-truth Labels: 10,31,62,82
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 10,31,62,82 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 25
+***************************************************************
+Ground-truth Labels: 11,26,45,69
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 11,26,45,69 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 26
+***************************************************************
+Ground-truth Labels: 50,68,74,80
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 50,68,74,80 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 27
+***************************************************************
+Ground-truth Labels: 0,67,87,97
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 0,67,87,97 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 28
+***************************************************************
+Ground-truth Labels: 11,17,88,98
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 11,17,88,98 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 29
+***************************************************************
+Ground-truth Labels: 23,49,51,61
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 23,49,51,61 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 30
+***************************************************************
+Ground-truth Labels: 16,34,53,90
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 16,34,53,90 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 31
+***************************************************************
+Ground-truth Labels: 46,50,87,89
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 46,50,87,89 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 32
+***************************************************************
+Ground-truth Labels: 18,42,43,93
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 18,42,43,93 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 33
+***************************************************************
+Ground-truth Labels: 16,38,55,78
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 16,38,55,78 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 34
+***************************************************************
+Ground-truth Labels: 2,69,73,89
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 2,69,73,89 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 35
+***************************************************************
+Ground-truth Labels: 18,20,54,98
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 18,20,54,98 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 36
+***************************************************************
+Ground-truth Labels: 54,78,83,94
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 54,78,83,94 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 37
+***************************************************************
+Ground-truth Labels: 0,58,65,71
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 0,58,65,71 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 38
+***************************************************************
+Ground-truth Labels: 1,12,70,98
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 1,12,70,98 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 39
+***************************************************************
+Ground-truth Labels: 32,54,77,98
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 32,54,77,98 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 40
+***************************************************************
+Ground-truth Labels: 51,61,78,95
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 51,61,78,95 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 41
+***************************************************************
+Ground-truth Labels: 19,53,60,71
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 19,53,60,71 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 42
+***************************************************************
+Ground-truth Labels: 22,28,47,93
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 22,28,47,93 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 43
+***************************************************************
+Ground-truth Labels: 7,38,63,80
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 7,38,63,80 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 44
+***************************************************************
+Ground-truth Labels: 11,45,97,99
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 11,45,97,99 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 45
+***************************************************************
+Ground-truth Labels: 22,67,69,94
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 22,67,69,94 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 46
+***************************************************************
+Ground-truth Labels: 9,19,27,33
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 9,19,27,33 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 47
+***************************************************************
+Ground-truth Labels: 20,29,73,89
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 20,29,73,89 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 48
+***************************************************************
+Ground-truth Labels: 13,16,38,75
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 13,16,38,75 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 49
+***************************************************************
+Ground-truth Labels: 8,42,45,47
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 8,42,45,47 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+Start Experiment 50
+***************************************************************
+Ground-truth Labels: 11,34,44,77
+Ground-truth Num of Instances: 32,32,32,32
+Our Recovered Labels: 11,34,44,77 | LeAcc: 1.000
+Our Recovered Num of Instances: 32,32,32,32 | LnAcc: 1.000 | IRec: 1.000
+---------------------------------------------------------------
+Mean Ours LeAcc: 1.000 | Mean Ours LnAcc: 1.000 | Mean Ours IRec: 1.000
