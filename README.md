@@ -217,6 +217,19 @@ We have placed our experimental logs in *./logs* directory including the main te
 
 Batch image reconstruction on MNIST (FCN-3, BS50) and CIFAR100 (ResNet-18, BS16) compared with IG. We assign a specific label to each instance after label restoration at 100% accuracy. The 6 best visual images are selected to display and calculate the metrics.
 
+## Citation
+
+```
+@inproceedings{
+    ma2023instancewise,
+    title={Instance-wise Batch Label Restoration via Gradients in Federated Learning},
+    author={Kailang Ma and Yu Sun and Jian Cui and Dawei Li and Zhenyu Guan and Jianwei Liu},
+    booktitle={The Eleventh International Conference on Learning Representations },
+    year={2023},
+    url={https://openreview.net/forum?id=FIrQfNSOoTr}
+}
+```
+
 ## License
 
 This project is released under the MIT License.
