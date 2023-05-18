@@ -9,7 +9,7 @@ The project builds on the basic torch environment and several common libraries .
 Here is a simple instruction to install the essential python libraries:
 
 ```bash
-pip install -i requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Datasets and Models
