@@ -7,7 +7,7 @@ import pandas as pd
 from collections import Counter
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
-from methods import iLRG, sim_iLRG, idlg_infer, gi_infer, svd_infer
+from .methods import iLRG, sim_iLRG, idlg_infer, gi_infer, svd_infer
 
 
 class Config:
@@ -266,7 +266,7 @@ def degrade_grads(grads,
                   param_value=0.001,
                   images=None,
                   model=None):
-    from defense import additive_noise, gradient_clipping, \
+    from .defense import additive_noise, gradient_clipping, \
         gradient_compression, perturb_representation
     if defense_method == 'dp':
         lossy_grads = additive_noise(grads, param_value)

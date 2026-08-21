@@ -5,11 +5,11 @@ import time
 import torch
 import torchvision
 
-from utils import get_target_data
+from .utils import get_target_data
 from collections import defaultdict
-from medianfilt import MedianPool2d
-from metrics import InceptionScore
-from metrics import total_variation as TV
+from .medianfilt import MedianPool2d
+from .metrics import InceptionScore
+from .metrics import total_variation as TV
 
 
 class GradientReconstructor:
