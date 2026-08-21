@@ -46,9 +46,13 @@ if __name__ == '__main__':
     device = 'cuda:0'
     dataset = 'mnist'
     lpips_loss = lpips.LPIPS(net='vgg', spatial=False).to(device)
-    x = [os.path.join(f'images/{dataset}_gt', _) for _ in os.listdir(f'images/{dataset}_gt')]
-    y = [os.path.join(f'images/{dataset}_ig', _) for _ in os.listdir(f'images/{dataset}_ig')]
-    z = [os.path.join(f'images/{dataset}_ours', _) for _ in os.listdir(f'images/{dataset}_ours')]
+    reconstruction_dir = os.path.join('assets', 'reconstructions')
+    x_dir = os.path.join(reconstruction_dir, f'{dataset}_gt')
+    y_dir = os.path.join(reconstruction_dir, f'{dataset}_ig')
+    z_dir = os.path.join(reconstruction_dir, f'{dataset}_ours')
+    x = [os.path.join(x_dir, filename) for filename in os.listdir(x_dir)]
+    y = [os.path.join(y_dir, filename) for filename in os.listdir(y_dir)]
+    z = [os.path.join(z_dir, filename) for filename in os.listdir(z_dir)]
     x = get_images(x, 28 if dataset == 'mnist' else 32)
     y = get_images(y, 28 if dataset == 'mnist' else 32)
     z = get_images(z, 28 if dataset == 'mnist' else 32)

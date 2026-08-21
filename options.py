@@ -108,5 +108,4 @@ def options():
 
     # Files and folders:
     parser.add_argument('--save_image', action='store_true', help='Save the output to a file.')
-    # parser.add_argument('--image_dir', default='images/Experiment', type=str)
     return parser

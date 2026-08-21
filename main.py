@@ -13,8 +13,8 @@ from train import Classification, train, iter_train
 
 if __name__ == '__main__':
     args = options().parse_args()
-    args.log_dir = os.path.join('logs', args.exp_name)
-    args.image_dir = os.path.join('images', args.exp_name)
+    args.log_dir = os.path.join('results', 'runs', args.exp_name)
+    args.image_dir = os.path.join('results', 'reconstructions', args.exp_name)
 
     # Defend params
     noise_std = args.noise_std

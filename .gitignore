@@ -1,0 +1,25 @@
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Local datasets and checkpoints
+data/
+models/
+*.pth
+*.pt
+
+# New experiment outputs (archived logs remain tracked)
+results/runs/
+results/reconstructions/
+
+# Miscellaneous
+*.log.tmp

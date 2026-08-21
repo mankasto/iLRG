@@ -227,7 +227,7 @@ def get_dataloader(dataset, batch_size, shuffle=True):
     return dataloader
 
 
-def get_log_id(res_dir='logs/Experiment'):
+def get_log_id(res_dir='results/runs/Experiment'):
     if not os.path.exists(res_dir):
         log_id = 1
     else:
