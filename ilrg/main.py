@@ -1,18 +1,22 @@
 import time
-import consts
-import rec_imgs
-import torchvision
-from utils import *
-import torch.nn as nn
-from defense import params
-from options import options
-from methods import get_emb
-from models import get_model
-from datasets import get_dataset
-from train import Classification, train, iter_train
+from .options import options
 
 if __name__ == '__main__':
     args = options().parse_args()
+
+    # Import the numerical stack only after argument parsing so lightweight
+    # commands such as ``python -m ilrg --help`` work before optional research
+    # dependencies are installed.
+    from . import consts, rec_imgs
+    import torchvision
+    from .utils import *
+    import torch.nn as nn
+    from .defense import params
+    from .methods import get_emb
+    from .models import get_model
+    from .datasets import get_dataset
+    from .train import Classification, train, iter_train
+
     args.log_dir = os.path.join('results', 'runs', args.exp_name)
     args.image_dir = os.path.join('results', 'reconstructions', args.exp_name)
 

@@ -31,7 +31,7 @@ MNIST and CIFAR-100 are downloaded automatically. Download ImageNet separately a
 MNIST with the three-layer fully connected network:
 
 ```bash
-python main.py \
+python -m ilrg \
   --exp_name quickstart_mnist \
   --dataset MNIST_GRAY \
   --model dnn \
@@ -43,7 +43,7 @@ python main.py \
 CIFAR-100 with LeNet-5:
 
 ```bash
-python main.py \
+python -m ilrg \
   --exp_name quickstart_cifar100 \
   --dataset CIFAR100 \
   --model lenet5 \
@@ -71,18 +71,20 @@ New runs are written to `results/runs/<exp_name>/`; reconstructed images are wri
 | `--save_image` | Save reconstruction images |
 | `--cpu` | Run on CPU |
 
-The complete reproducibility commands are organized in [docs/experiments.md](docs/experiments.md). Run `python main.py --help` for every available option.
+The complete reproducibility commands are organized in [docs/experiments.md](docs/experiments.md). Run `python -m ilrg --help` for every available option.
 
 ## Repository structure
 
 ```text
 iLRG/
-├── main.py                    # experiment entry point
-├── methods.py                 # iLRG and comparison methods
-├── datasets.py               # dataset loading and sampling
-├── models.py                  # model definitions
-├── rec_imgs.py                # gradient-inversion reconstruction
-├── train.py                   # model training utilities
+├── ilrg/                      # importable Python package
+│   ├── __main__.py            # `python -m ilrg` entry point
+│   ├── main.py                # experiment workflow
+│   ├── methods.py             # iLRG and comparison methods
+│   ├── datasets.py            # dataset loading and sampling
+│   ├── models.py              # model definitions
+│   ├── rec_imgs.py            # gradient-inversion reconstruction
+│   └── train.py               # model training utilities
 ├── assets/
 │   ├── figures/               # README figures
 │   └── reconstructions/       # curated reconstruction examples
@@ -93,7 +95,7 @@ iLRG/
     └── logs/additional/       # archived additional experiments
 ```
 
-The Python modules remain at the repository root so commands from the original release continue to work.
+All core Python code lives in the `ilrg/` package. Run experiments from the repository root with `python -m ilrg ...`; metrics for the curated reconstructions can be calculated with `python -m ilrg.cal_metrics`.
 
 ## Results
 

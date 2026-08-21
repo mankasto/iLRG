@@ -3,7 +3,7 @@ Modified From https://github.com/JonasGeiping/invertinggradients"""
 
 import os
 import torch
-import consts
+from . import consts
 import torchvision
 import torchvision.transforms as transforms
 
