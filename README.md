@@ -18,11 +18,21 @@ Highlights:
 
 ## Installation
 
-The original experiments used Python 3.8 and PyTorch 1.7 with CUDA 11.0. Create an isolated environment, then install the dependencies:
+The original experiments used Python 3.8 and PyTorch 1.7 with CUDA 11.0. The package needs Python 3.9 or newer and NumPy below 2 (the SVD baseline of `--compare` fails under NumPy 2). Create an isolated environment and install the package with its dependencies from the repository root:
 
 ```bash
-pip install -r requirements.txt
+# conda
+conda create -n ilrg python=3.11
+conda activate ilrg
+pip install -e .
+
+# or venv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
 ```
+
+For a CUDA build of PyTorch, install `torch` and `torchvision` first as described on [pytorch.org](https://pytorch.org/get-started/locally/), then run `pip install -e .`. `requirements.txt` lists the same dependencies for installing them without the package.
 
 MNIST and CIFAR-100 are downloaded automatically. Download ImageNet separately and place it under `data/`.
 

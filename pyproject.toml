@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ilrg"
+dynamic = ["version"]
+description = "Instance-wise batch label restoration via gradients in federated learning (ICLR 2023)"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+dependencies = [
+    "torch",
+    "torchvision",
+    "numpy<2",  # the SVD baseline (--compare) fails under NumPy 2
+    "cvxopt",
+    "scikit-learn",
+    "opencv-python-headless<4.12",  # later releases require NumPy 2
+    "lpips",
+]
+
+[project.urls]
+Paper = "https://openreview.net/forum?id=FIrQfNSOoTr"
+
+[tool.setuptools]
+packages = ["ilrg"]
+
+[tool.setuptools.dynamic]
+version = { attr = "ilrg.__version__" }
