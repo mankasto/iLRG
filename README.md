@@ -38,7 +38,7 @@ probabilities, sets up linear equations between gradients, probabilities and lab
 the number of instances per class with the Moore-Penrose pseudoinverse.
 
 <p align="center">
-  <img src="assets/figures/overview.png" width="85%" alt="Threat model and overview of iLRG: the server restores the number of instances per class from the shared gradients">
+  <img src="assets/figures/overview.png" width="560" alt="Threat model and overview of iLRG: the server restores the number of instances per class from the shared gradients">
 </p>
 
 - **Instance-wise label restoration** from batch-averaged gradients, beyond class presence.
@@ -69,7 +69,7 @@ number accuracy; CosSim: cosine similarity of the recovered post-softmax probabi
 ### Gradient inversion with restored labels
 
 <p align="center">
-  <img src="assets/figures/reconstruction-comparison.jpeg" width="90%" alt="Gradient inversion with and without iLRG labels on MNIST and CIFAR-100">
+  <img src="assets/figures/reconstruction-comparison.jpeg" width="620" alt="Gradient inversion with and without iLRG labels on MNIST and CIFAR-100">
 </p>
 
 Batch reconstruction on MNIST (FCN-3, batch size 50) and CIFAR-100 (ResNet-18, batch size 16), with and
