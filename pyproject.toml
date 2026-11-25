@@ -24,7 +24,7 @@ dependencies = [
 Paper = "https://openreview.net/forum?id=FIrQfNSOoTr"
 
 [tool.setuptools]
-packages = ["ilrg"]
+packages = ["ilrg", "ilrg.federated", "ilrg.reconstruction", "ilrg.restoration"]
 
 [tool.setuptools.dynamic]
 version = { attr = "ilrg.__version__" }

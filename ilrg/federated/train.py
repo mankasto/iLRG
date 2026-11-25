@@ -4,13 +4,13 @@ import os
 import math
 import torch
 import numpy as np
-from .options import options
+from ..options import options
 from .models import get_model
 from .loss import Classification
-from .datasets import get_dataset
+from .data import get_dataloader, get_dataset
 from collections import defaultdict
 from .scheduler import GradualWarmupScheduler
-from .utils import Config, get_device, get_dataloader, lr_milestones
+from ..utils import Config, get_device, lr_milestones
 
 NON_BLOCKING = False
 WARMUP_MULTIPLIER = 10

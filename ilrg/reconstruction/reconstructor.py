@@ -5,9 +5,10 @@ import time
 import torch
 import torchvision
 
-from .utils import get_target_data, lr_milestones
+from ..federated.data import get_target_data
+from ..utils import lr_milestones
 from collections import defaultdict
-from .medianfilt import MedianPool2d
+from .median_pool import MedianPool2d
 from .metrics import InceptionScore
 from .metrics import total_variation as TV
 

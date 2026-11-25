@@ -1,8 +1,9 @@
 """Error analysis for ``--analysis``: how well the approximations behind iLRG hold per class."""
 
+import numpy as np
 import torch
 
-from .utils import AverageMeter, print_util
+from ..utils import AverageMeter, print_util
 
 # Embedding MSEs above this value enter the averages as this value.
 EMBEDDING_MSE_CAP = 10
@@ -150,7 +151,7 @@ class ErrorAnalysis:
         """Compare one class's restored embedding and probabilities with the batch's true values.
 
         w_grad, b_grad: the class's row of the fc-layer gradients. batch_stats: the per-class
-        averages from utils.collect_cls_variables.
+        averages from collect_cls_variables.
         """
         indexes, embeddings, outs, probs, wgrads, bgrads = batch_stats
         if len(indexes[class_id]) == 0:
@@ -184,3 +185,30 @@ class ErrorAnalysis:
         for names, line_end in SUMMARY_LINES:
             print_util(format_metrics(names, averages, 'Mean Avg ', SUMMARY_LABELS) + line_end,
                        log_file=self.log_file)
+
+
+def collect_cls_variables(embeddings, outs, gt_label, num_classes, model, loss_fn):
+    # Sample indexes for each class
+    indexes = [np.where(gt_label.cpu().numpy() == i)[0] for i in range(num_classes)]
+    cls_embeddings, cls_outs, cls_probs, cls_wgrad, cls_bgrad = {}, {}, {}, {}, {}
+    for i in range(num_classes):
+        if len(indexes[i]) > 0:
+            # Average embeddings for batch_i (samples of class i)
+            cls_embedding = embeddings[indexes[i]]
+            cls_embeddings[i] = cls_embedding.mean(dim=0)
+            # Average outputs for batch_i (samples of class i)
+            cls_out = outs[indexes[i]]
+            cls_outs[i] = cls_out.mean(dim=0)
+            # Gt labels for batch_i (samples of class i)
+            cls_label = gt_label[indexes[i]]
+            # Average loss values for batch_i (samples of class i)
+            cls_loss = loss_fn(cls_out, cls_label)
+            model.zero_grad()
+            # Average grads for batch_i (samples of class i)
+            cls_grads = torch.autograd.grad(cls_loss, model.fc.parameters(), retain_graph=True)
+            # Gradients of last fc layer, for weight and bias
+            cls_grads = list((_.detach().cpu().clone() for _ in cls_grads))[-2:]
+            cls_wgrad[i], cls_bgrad[i] = cls_grads[0][i], cls_grads[1][i]
+            # Average softmax Probabilities for batch_i (samples of class i)
+            cls_probs[i] = torch.softmax(cls_out, dim=1).mean(dim=0)
+    return indexes, cls_embeddings, cls_outs, cls_probs, cls_wgrad, cls_bgrad

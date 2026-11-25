@@ -74,7 +74,7 @@ number accuracy; CosSim: cosine similarity of the recovered post-softmax probabi
 
 Batch reconstruction on MNIST (FCN-3, batch size 50) and CIFAR-100 (ResNet-18, batch size 16), with and
 without the labels iLRG restores (Figure 4 of the paper). The curated images are in
-[`assets/reconstructions/`](assets/reconstructions); `python -m ilrg.cal_metrics` computes PSNR and LPIPS
+[`assets/reconstructions/`](assets/reconstructions); `python -m ilrg.reconstruction.cal_metrics` computes PSNR and LPIPS
 from these saved PNGs after resizing them to the dataset's image size (28 px for MNIST, 32 px for
 CIFAR-100).
 
@@ -166,21 +166,30 @@ earlier version of the code, so their headers list a few options that no longer 
 
 ```text
 iLRG/
-├── ilrg/                  # the Python package
-│   ├── __main__.py        # `python -m ilrg`: parses the options, then runs main.py
-│   ├── main.py            # one experiment: data, model, gradients, restoration, comparison, reconstruction
-│   ├── methods.py         # iLRG and the iDLG, GI and RLG baselines
-│   ├── utils.py           # batch sampling, gradients and logging
-│   ├── analysis.py        # the error statistics of --analysis
-│   ├── datasets.py        # datasets
-│   ├── models.py          # FCN, LeNet, VGG and ResNet
-│   ├── rec_imgs.py        # gradient-inversion reconstruction
-│   ├── defense.py         # gradient defenses
-│   ├── train.py           # training the models used with --trained_model
-│   └── cal_metrics.py     # PSNR and LPIPS of the saved reconstruction PNGs
-├── docs/experiments.md    # commands for every experiment
-├── assets/                # README figures and curated reconstructions
-└── results/logs/          # logs of the original runs
+├── ilrg/                      # the Python package
+│   ├── __main__.py            # `python -m ilrg`: parses the options, then runs experiment.py
+│   ├── options.py             # command-line options
+│   ├── experiment.py          # one experiment: data, model, gradients, restoration, comparison, reconstruction
+│   ├── utils.py               # running averages, seeds, devices and log files
+│   ├── restoration/           # label restoration
+│   │   ├── ilrg.py            # iLRG: class-wise embeddings, probabilities and instance counts
+│   │   ├── baselines.py       # the iDLG, GI and RLG (SVD) baselines
+│   │   ├── results.py         # restored labels scored against the true labels and logged
+│   │   └── analysis.py        # the error statistics of --analysis
+│   ├── reconstruction/        # image reconstruction from gradients
+│   │   ├── reconstructor.py   # gradient-inversion reconstruction
+│   │   ├── median_pool.py     # the median image filter of reconstruction
+│   │   ├── metrics.py         # PSNR, total variation and Inception score
+│   │   └── cal_metrics.py     # PSNR and LPIPS of the saved reconstruction PNGs
+│   └── federated/             # the federated-learning setting
+│       ├── data.py            # datasets, normalization constants and batch sampling
+│       ├── models.py          # FCN, LeNet, VGG and ResNet
+│       ├── gradients.py       # shared gradients and their degraded versions
+│       ├── defense.py         # gradient defenses
+│       └── train.py           # training the models used with --trained_model (with loss.py, scheduler.py)
+├── docs/experiments.md        # commands for every experiment
+├── assets/                    # README figures and curated reconstructions
+└── results/logs/              # logs of the original runs
 ```
 
 <a name="citation"></a>

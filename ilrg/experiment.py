@@ -16,17 +16,18 @@ import torch.nn as nn
 import torchvision
 from torch.utils.data import Dataset
 
-from . import consts, rec_imgs
-from .analysis import ErrorAnalysis
-from .datasets import get_dataset
-from .defense import params
-from .methods import get_emb
-from .models import get_model
+from .federated import data
+from .federated.data import get_data, get_dataset
+from .federated.defense import params
+from .federated.gradients import degrade_grads, get_grads
+from .federated.models import get_model
+from .federated.train import train_model, training_config
 from .options import options
-from .train import train_model, training_config
-from .utils import (AverageMeter, collect_cls_variables, degrade_grads, get_data, get_device, get_grads,
-                    get_irlg_res, get_log_file, get_other_res, get_params_string, post_process_emb, print_util,
-                    set_random_seed)
+from .reconstruction.reconstructor import GradientReconstructor
+from .restoration.analysis import ErrorAnalysis, collect_cls_variables
+from .restoration.ilrg import get_emb, post_process_emb
+from .restoration.results import get_irlg_res, get_other_res
+from .utils import AverageMeter, get_device, get_log_file, get_params_string, print_util, set_random_seed
 
 TRIAL_SEPARATOR = '*' * 63
 SUMMARY_SEPARATOR = '-' * 63
@@ -85,8 +86,8 @@ def load_or_train_model(args, model, train_data, valid_data, device, log_file):
 def image_mean_std(dataset, device):
     """Dataset mean and std as (C, 1, 1) tensors, to undo the input normalisation."""
     name = 'mnist' if dataset.lower() == 'mnist_gray' else dataset.lower()
-    mean = torch.as_tensor(getattr(consts, f'{name}_mean'))[:, None, None].to(device)
-    std = torch.as_tensor(getattr(consts, f'{name}_std'))[:, None, None].to(device)
+    mean = torch.as_tensor(getattr(data, f'{name}_mean'))[:, None, None].to(device)
+    std = torch.as_tensor(getattr(data, f'{name}_std'))[:, None, None].to(device)
     return mean, std
 
 
@@ -264,7 +265,7 @@ def reconstruct_images(run, grads, gt_data, gt_label, mod_rec_instances):
     args, model = run.args, run.model
     model.eval()
     grads = [g.to(**run.setup) for g in grads]
-    rec_machine = rec_imgs.GradientReconstructor(model=model,
+    rec_machine = GradientReconstructor(model=model,
                                                  config=reconstruction_config(args),
                                                  mean_std=run.mean_std,
                                                  num_images=args.num_images,
@@ -383,7 +384,7 @@ def run_experiments(args):
     meters.update({attack + '_leacc': AverageMeter() for attack in OTHER_ATTACKS})
     custom_counts = {}
     if 'custom' in args.distribution:
-        custom_counts = {label: AverageMeter() for label in consts.CUSTOM_DISTRIBUTION_CLASSES}
+        custom_counts = {label: AverageMeter() for label in data.CUSTOM_DISTRIBUTION_CLASSES}
     analysis = ErrorAnalysis(model, device, args.num_images, args.ratio, log_file) if args.analysis else None
 
     target_id = args.start_id
