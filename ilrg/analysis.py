@@ -134,8 +134,11 @@ def new_meters():
 class ErrorAnalysis:
     """Collects per-class errors, prints them and averages them per batch and over the run."""
 
-    def __init__(self, ratio, log_file):
-        self.ratio = ratio
+    def __init__(self, model, device, num_images, ratio, log_file):
+        self.model = model
+        self.device = device
+        self.num_images = num_images
+        self.ratio = ratio  # share of extreme values left out at each end of the averages
         self.log_file = log_file
         self.run_meters = new_meters()
         self.batch_meters = new_meters()
@@ -143,7 +146,21 @@ class ErrorAnalysis:
     def start_batch(self):
         self.batch_meters = new_meters()
 
-    def add_class(self, class_id, values):
+    def add_class(self, class_id, rec_emb, rec_prob, w_grad, b_grad, batch_stats):
+        """Compare one class's restored embedding and probabilities with the batch's true values.
+
+        w_grad, b_grad: the class's row of the fc-layer gradients. batch_stats: the per-class
+        averages from utils.collect_cls_variables.
+        """
+        indexes, embeddings, outs, probs, wgrads, bgrads = batch_stats
+        if len(indexes[class_id]) == 0:
+            # Absent class: only the restored probabilities can be checked (against zero)
+            prob_mse = torch.mean(rec_prob ** 2)
+            print_util('Class %d | Probabilities MSE: %e' % (class_id, prob_mse.item()), log_file=self.log_file)
+            return
+        class_stats = (embeddings[class_id], outs[class_id], probs[class_id], wgrads[class_id], bgrads[class_id])
+        values = class_errors(self.model, self.device, len(indexes[class_id]) / self.num_images,
+                              rec_emb, rec_prob, w_grad, b_grad, class_stats)
         for name, value in values.items():
             if name == 'emb_mse':
                 value = value if value < EMBEDDING_MSE_CAP else EMBEDDING_MSE_CAP
@@ -151,11 +168,6 @@ class ErrorAnalysis:
         for names, line_end in CLASS_LINES:
             print_util('Class %d | ' % class_id + format_metrics(names, values) + line_end,
                        log_file=self.log_file)
-
-    def add_missing_class(self, class_id, rec_prob):
-        """A class absent from the batch: only the restored probabilities can be checked (against 0)."""
-        prob_mse = torch.mean(rec_prob ** 2)
-        print_util('Class %d | Probabilities MSE: %e' % (class_id, prob_mse.item()), log_file=self.log_file)
 
     def end_batch(self):
         """Trimmed batch averages: add them to the run averages and print them."""

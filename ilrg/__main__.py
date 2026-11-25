@@ -1,7 +1,15 @@
 """Command-line entry point for ``python -m ilrg``."""
 
-from runpy import run_module
+from .options import options
+
+
+def main():
+    args = options().parse_args()
+    # Import the numerical stack only after parsing, so that ``python -m ilrg --help``
+    # works before the research dependencies are installed.
+    from .main import run_experiments
+    run_experiments(args)
 
 
 if __name__ == "__main__":
-    run_module("ilrg.main", run_name="__main__")
+    main()

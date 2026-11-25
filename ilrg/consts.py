@@ -7,3 +7,6 @@ mnist_mean = (0.13066373765468597,)
 mnist_std = (0.30810782313346863,)
 imagenet_mean = [0.485, 0.456, 0.406]
 imagenet_std = [0.229, 0.224, 0.225]
+
+# Classes of the custom_imbalanced and custom_balanced batch distributions (CIFAR-100 ids)
+CUSTOM_DISTRIBUTION_CLASSES = (0, 18, 92)
