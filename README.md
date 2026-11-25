@@ -1,131 +1,190 @@
-# iLRG
+<h1 align="center">iLRG</h1>
 
-Official implementation of **Instance-wise Batch Label Restoration via Gradients in Federated Learning**, accepted at **ICLR 2023**.
+<h3 align="center">Instance-wise Batch Label Restoration via Gradients in Federated Learning</h3>
 
-[Paper](https://openreview.net/forum?id=FIrQfNSOoTr) · [PDF](https://openreview.net/pdf?id=FIrQfNSOoTr) · [Slides](https://iclr.cc/media/iclr-2023/Slides/11872.pdf) · [Talk](https://slideslive.com/38999096/instancewise-batch-label-restoration-via-gradients-in-federated-learning)
+<p align="center">
+  <a href="https://openreview.net/forum?id=FIrQfNSOoTr"><img src="https://img.shields.io/badge/ICLR-2023-4b44ce.svg" alt="ICLR 2023"></a>
+  <a href="https://openreview.net/pdf?id=FIrQfNSOoTr"><img src="https://img.shields.io/badge/Paper-PDF-b31b1b.svg" alt="Paper"></a>
+  <a href="https://iclr.cc/media/iclr-2023/Slides/11872.pdf"><img src="https://img.shields.io/badge/Slides-ICLR-orange.svg" alt="Slides"></a>
+  <a href="https://slideslive.com/38999096/instancewise-batch-label-restoration-via-gradients-in-federated-learning"><img src="https://img.shields.io/badge/Talk-SlidesLive-red.svg" alt="Talk"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/Python-3.9%2B-3776ab.svg" alt="Python 3.9+">
+  <img src="https://img.shields.io/badge/PyTorch-ee4c2c.svg" alt="PyTorch">
+</p>
 
-## Overview
+<p align="center">
+  Kailang Ma<sup>*</sup>, Yu Sun<sup>*&dagger;</sup>, Jian Cui, Dawei Li, Zhenyu Guan, Jianwei Liu<br>
+  School of Cyber Science and Technology, Beihang University<br>
+  <sub><sup>*</sup>Co-first authors &nbsp; <sup>&dagger;</sup>Corresponding author</sub>
+</p>
 
-iLRG analytically restores the number of instances from each class using batch-averaged gradients in federated learning. The restored labels can also improve gradient-inversion attacks by assigning a label to every reconstructed instance.
+<p align="center">
+  <a href="#overview">Overview</a> &nbsp;|&nbsp;
+  <a href="#results">Results</a> &nbsp;|&nbsp;
+  <a href="#installation">Installation</a> &nbsp;|&nbsp;
+  <a href="#quick-start">Quick start</a> &nbsp;|&nbsp;
+  <a href="#reproducing-the-paper">Reproducing the paper</a> &nbsp;|&nbsp;
+  <a href="#citation">Citation</a>
+</p>
 
-Highlights:
+<a name="overview"></a>
+## 💡 Overview
 
-- instance-wise label restoration from averaged gradients;
-- support for MNIST, CIFAR-100, and ImageNet experiments;
-- evaluations across FCN, LeNet, VGG, and ResNet families;
-- comparison with iDLG, GI, RLG, and gradient-inversion reconstruction;
-- archived logs and reconstruction outputs used by the paper.
+Gradient inversion attacks recover a client's training data from the gradients it shares in federated
+learning, and their search becomes much smaller once the labels are known. Earlier analytic methods only
+identify which classes are present in a batch. iLRG restores **how many instances of each class** a batch
+contains, from the gradient of the final layer alone: it recovers class-wise embeddings and post-softmax
+probabilities, sets up linear equations between gradients, probabilities and labels, and solves them for
+the number of instances per class with the Moore-Penrose pseudoinverse.
 
-## Installation
+<p align="center">
+  <img src="assets/figures/overview.png" width="85%" alt="Threat model and overview of iLRG: the server restores the number of instances per class from the shared gradients">
+</p>
 
-The original experiments used Python 3.8 and PyTorch 1.7 with CUDA 11.0. The package needs Python 3.9 or newer and NumPy below 2 (the SVD baseline of `--compare` fails under NumPy 2). Create an isolated environment and install the package with its dependencies from the repository root:
+- **Instance-wise label restoration** from batch-averaged gradients, beyond class presence.
+- **Over 99% label existence accuracy and over 96% label number accuracy** in most cases, on three image
+  datasets and four untrained classification models, with batch sizes up to 4096 and with partially
+  negative activations such as Leaky ReLU and Swish.
+- **Better gradient inversion**: feeding the restored labels to an existing attack raises PSNR by 6 to 7
+  on both MNIST and CIFAR-100.
 
-```bash
-# conda
-conda create -n ilrg python=3.11
-conda activate ilrg
-pip install -e .
-
-# or venv
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
-
-For a CUDA build of PyTorch, install `torch` and `torchvision` first as described on [pytorch.org](https://pytorch.org/get-started/locally/), then run `pip install -e .`. `requirements.txt` lists the same dependencies for installing them without the package.
-
-MNIST and CIFAR-100 are downloaded automatically. Download ImageNet separately and place it under `data/`.
-
-## Quick start
-
-MNIST with the three-layer fully connected network:
-
-```bash
-python -m ilrg \
-  --exp_name quickstart_mnist \
-  --dataset MNIST_GRAY \
-  --model dnn \
-  --num_tries 5 \
-  --num_images 24 \
-  --compare
-```
-
-CIFAR-100 with LeNet-5:
-
-```bash
-python -m ilrg \
-  --exp_name quickstart_cifar100 \
-  --dataset CIFAR100 \
-  --model lenet5 \
-  --num_tries 5 \
-  --num_images 24 \
-  --compare
-```
-
-New runs are written to `results/runs/<exp_name>/`; reconstructed images are written to `results/reconstructions/<exp_name>/` when `--save_image` is enabled.
-
-## Common options
-
-| Option | Purpose |
-| --- | --- |
-| `--exp_name` | Name of the run and output directory |
-| `--dataset` | `MNIST_GRAY`, `CIFAR100`, or `ImageNet` |
-| `--model` | Model name, such as `dnn`, `lenet5`, `vgg16`, or `resnet50` |
-| `--num_images` | Batch size / number of instances to restore |
-| `--num_tries` | Number of repeated trials |
-| `--distribution` | Batch label distribution |
-| `--trained_model` | Evaluate a trained checkpoint |
-| `--simplified` | Use simplified iLRG with known class presence |
-| `--compare` | Compare with prior label-restoration methods |
-| `--rec_img` | Run image reconstruction |
-| `--save_image` | Save reconstruction images |
-| `--cpu` | Run on CPU |
-
-The complete reproducibility commands are organized in [docs/experiments.md](docs/experiments.md). Run `python -m ilrg --help` for every available option.
-
-## Repository structure
-
-```text
-iLRG/
-├── ilrg/                      # importable Python package
-│   ├── __main__.py            # `python -m ilrg` entry point
-│   ├── main.py                # experiment workflow
-│   ├── methods.py             # iLRG and comparison methods
-│   ├── datasets.py            # dataset loading and sampling
-│   ├── models.py              # model definitions
-│   ├── rec_imgs.py            # gradient-inversion reconstruction
-│   └── train.py               # model training utilities
-├── assets/
-│   ├── figures/               # README figures
-│   └── reconstructions/       # curated reconstruction examples
-├── docs/
-│   └── experiments.md         # reproducibility command reference
-└── results/
-    ├── logs/main-paper/       # archived main-paper outputs
-    └── logs/additional/       # archived additional experiments
-```
-
-All core Python code lives in the `ilrg/` package. Run experiments from the repository root with `python -m ilrg ...`; metrics for the curated reconstructions can be calculated with `python -m ilrg.cal_metrics`.
-
-## Results
+<a name="results"></a>
+## 📊 Results
 
 ### Label restoration
 
-| Model | Dataset | LeAcc | LnAcc | CosSim (prob.) | iDLG LeAcc | GI LeAcc | RLG LeAcc |
+Batch size 24, untrained models (Table 1 of the paper). LeAcc: label existence accuracy; LnAcc: label
+number accuracy; CosSim: cosine similarity of the recovered post-softmax probabilities.
+
+| Model | Dataset | iDLG LeAcc | GI LeAcc | RLG LeAcc | **iLRG LeAcc** | **iLRG LnAcc** | **iLRG CosSim** |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| FCN-3 | MNIST | **1.000** | **0.994** | **0.979** | 0.514 | 1.000 | 0.932 |
-| LeNet-5 | CIFAR-100 | **1.000** | **1.000** | **1.000** | 1.000 | 1.000 | 1.000 |
-| LeNet-S | CIFAR-100 | **1.000** | **1.000** | **1.000** | 0.150 | 0.213 | 1.000 |
-| VGG-16 | ImageNet | **1.000** | **1.000** | **1.000** | 1.000 | 1.000 | 0.981 |
-| ResNet-50 | ImageNet | **1.000** | **1.000** | **1.000** | 1.000 | 1.000 | 1.000 |
+| FCN-3 | MNIST | 0.514 | 1.000 | 0.932 | **1.000** | **0.994** | **0.979** |
+| LeNet-5 | CIFAR-100 | 1.000 | 1.000 | 1.000 | **1.000** | **1.000** | **1.000** |
+| LeNet-S* | CIFAR-100 | 0.150 | 0.213 | 1.000 | **1.000** | **1.000** | **1.000** |
+| VGG-16 | ImageNet | 1.000 | 1.000 | 0.981 | **1.000** | **1.000** | **1.000** |
+| ResNet-50 | ImageNet | 1.000 | 1.000 | 1.000 | **1.000** | **1.000** | **1.000** |
 
-### Improved gradient inversion
+<sub>*LeNet-S is LeNet-5 with Swish activations instead of ReLU (`--model lenet5 --silu`).</sub>
 
-![MNIST and CIFAR-100 reconstruction comparison](assets/figures/reconstruction-comparison.jpeg)
+### Gradient inversion with restored labels
 
-The figure compares gradient inversion with iLRG-assisted reconstruction on MNIST (FCN-3, batch size 50) and CIFAR-100 (ResNet-18, batch size 16). Curated source images are available in `assets/reconstructions/`.
+<p align="center">
+  <img src="assets/figures/reconstruction-comparison.jpeg" width="90%" alt="Gradient inversion with and without iLRG labels on MNIST and CIFAR-100">
+</p>
 
-## Citation
+Batch reconstruction on MNIST (FCN-3, batch size 50) and CIFAR-100 (ResNet-18, batch size 16), with and
+without the labels iLRG restores (Figure 4 of the paper). The curated images are in
+[`assets/reconstructions/`](assets/reconstructions); `python -m ilrg.cal_metrics` computes PSNR and LPIPS
+from these saved PNGs after resizing them to the dataset's image size (28 px for MNIST, 32 px for
+CIFAR-100).
+
+<a name="installation"></a>
+## 🛠️ Installation
+
+The package needs Python 3.9 or newer and NumPy below 2 (the RLG baseline of `--compare` fails under
+NumPy 2). The paper's experiments used Python 3.8 and PyTorch 1.7 with CUDA 11.0. From the repository
+root:
+
+```bash
+conda create -n ilrg python=3.11
+conda activate ilrg
+pip install -e .
+```
+
+For a CUDA build of PyTorch, install `torch` and `torchvision` first as described on
+[pytorch.org](https://pytorch.org/get-started/locally/), then run `pip install -e .`. A plain virtual
+environment (`python3 -m venv .venv`) works the same way, and `requirements.txt` lists the same
+dependencies.
+
+### Data
+
+MNIST and CIFAR-100 download into `data/` on first use. For ImageNet, put the three official ILSVRC2012
+archives into `data/`: `ILSVRC2012_img_train.tar`, `ILSVRC2012_img_val.tar` and
+`ILSVRC2012_devkit_t12.tar.gz`. torchvision unpacks them on the first run, which needs a few hundred GB
+of free space. `--data_path` points to another folder.
+
+<a name="quick-start"></a>
+## 🚀 Quick start
+
+Restore the labels of 24-image batches on MNIST with the three-layer fully connected network, five times,
+and compare with iDLG, GI and RLG:
+
+```bash
+python -m ilrg --exp_name quickstart_mnist --dataset MNIST_GRAY --model dnn \
+  --num_tries 5 --num_images 24 --compare
+```
+
+The same on CIFAR-100 with LeNet-5:
+
+```bash
+python -m ilrg --exp_name quickstart_cifar100 --dataset CIFAR100 --model lenet5 \
+  --num_tries 5 --num_images 24 --compare
+```
+
+Each run writes its log to `results/runs/<exp_name>/` and ends with the mean LeAcc and LnAcc over the
+tries; RLG appears as `SVD` in the logs. Add `--cpu` to run without a GPU.
+
+### Main options
+
+| Option | Purpose |
+| --- | --- |
+| `--dataset` | `MNIST_GRAY`, `CIFAR100` or `ImageNet` |
+| `--model` | `dnn` (FCN, depth set by `--n_hidden`), `lenet5`, `lenetzhu`, `vgg11`/`13`/`16`/`19`, `resnet18`/`34`/`50`/`101`/`152` |
+| `--num_images`, `--num_tries` | Batch size, and how many batches to average over |
+| `--distribution` | How the batch labels are drawn, such as `random`, `balanced` or `custom_imbalanced` |
+| `--compare` | Also run iDLG, GI and RLG |
+| `--simplified` | iLRG when the classes present in the batch are known |
+| `--trained_model` | Use a trained model (`--epochs`, or `--iter_train --iters`); a missing checkpoint is trained first, so create `models/` beforehand |
+| `--silu`, `--leaky_relu`, `--batchnorm`, `--dropout` | Model variants |
+| `--defense --defense_method` | Apply a gradient defense (`dp`, `clip` or `sparse`) before the attack |
+| `--rec_img --fix_labels --save_image` | Gradient inversion with the restored labels; images go to `results/reconstructions/<exp_name>/` |
+
+`python -m ilrg --help` lists every option.
+
+<a name="reproducing-the-paper"></a>
+## 🔁 Reproducing the paper
+
+The commands for every experiment are in [docs/experiments.md](docs/experiments.md) (the third column
+names its section), and the logs of the original runs are kept under [`results/logs/`](results/logs).
+
+| Paper | What it shows | Commands | Archived logs |
+| --- | --- | --- | --- |
+| Table 1 | Label restoration against iDLG, GI and RLG | Label restoration examples (add `--silu` for LeNet-S) | `main-paper/Experiment1` (`exp3-2(swish).log` is LeNet-S), `main-paper/cos_sim` |
+| Figure 2 | Different training stages | Training-stage analysis | `additional/TrainingStage` |
+| Figure 3 | Batch size and model depth | Batch-size and architecture studies | `main-paper/Experiment2` |
+| Figures 4 and 6 | Gradient inversion with restored labels | Gradient inversion with iLRG | `main-paper/Experiment3` |
+| Tables 3 and 4 | Approximation errors over training; embedding reconstruction against Soteria | Error analysis and Soteria comparison | `additional/ErrorAnalysis&vsSoteria` |
+| Table 5 | Extreme label distributions | Extreme label distributions | `additional/ExtremeDistribution` |
+| Figure 5 | Differential privacy and gradient sparsification | Defense strategies | `additional/DefenseStrategy` |
+
+The archive also keeps further runs from the original release (`main-paper/trained_models`,
+`main-paper/data_distributions` and `main-paper/batchnorm&dropout`). The archived logs come from an
+earlier version of the code, so their headers list a few options that no longer exist.
+
+<a name="repository-layout"></a>
+## 🗂️ Repository layout
+
+```text
+iLRG/
+├── ilrg/                  # the Python package
+│   ├── __main__.py        # `python -m ilrg`: parses the options, then runs main.py
+│   ├── main.py            # one experiment: data, model, gradients, restoration, comparison, reconstruction
+│   ├── methods.py         # iLRG and the iDLG, GI and RLG baselines
+│   ├── utils.py           # batch sampling, gradients and logging
+│   ├── analysis.py        # the error statistics of --analysis
+│   ├── datasets.py        # datasets
+│   ├── models.py          # FCN, LeNet, VGG and ResNet
+│   ├── rec_imgs.py        # gradient-inversion reconstruction
+│   ├── defense.py         # gradient defenses
+│   ├── train.py           # training the models used with --trained_model
+│   └── cal_metrics.py     # PSNR and LPIPS of the saved reconstruction PNGs
+├── docs/experiments.md    # commands for every experiment
+├── assets/                # README figures and curated reconstructions
+└── results/logs/          # logs of the original runs
+```
+
+<a name="citation"></a>
+## 📝 Citation
 
 ```bibtex
 @inproceedings{ma2023instancewise,
@@ -137,6 +196,16 @@ The figure compares gradient inversion with iLRG-assisted reconstruction on MNIS
 }
 ```
 
-## License
+<a name="acknowledgements"></a>
+## 🙏 Acknowledgements
 
-This project is released under the [MIT License](LICENSE).
+Parts of the code build on [Inverting Gradients](https://github.com/JonasGeiping/invertinggradients)
+(reconstruction, training, datasets and the ResNet models), [GGL](https://github.com/zhuohangli/GGL)
+(gradient defenses), [pytorch-gradual-warmup-lr](https://github.com/ildoonet/pytorch-gradual-warmup-lr)
+(the warmup scheduler) and a [median pooling gist](https://gist.github.com/rwightman/f2d3849281624be7c0f11c85c87c1598)
+by Ross Wightman.
+
+<a name="license"></a>
+## 📄 License
+
+Released under the [MIT License](LICENSE).
