@@ -1,13 +1,21 @@
+<h1 align="center">iLRG: Instance-wise Batch Label Restoration<br>via Gradients in Federated Learning</h1>
+
 <p align="center">
-  <a href="https://iclr.cc/Conferences/2023">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="assets/figures/iclr-logo-dark.svg">
-      <img src="assets/figures/iclr-logo.svg" alt="ICLR 2023" height="48">
-    </picture>
-  </a>
+  Kailang Ma<sup>*</sup>, Yu Sun<sup>*&dagger;</sup>, Jian Cui, Dawei Li, Zhenyu Guan, Jianwei Liu<br>
+  <sub>School of Cyber Science and Technology, Beihang University &nbsp;&nbsp; <sup>*</sup>Co-first authors &nbsp; <sup>&dagger;</sup>Corresponding author</sub>
 </p>
 
-<h1 align="center">iLRG: Instance-wise Batch Label Restoration<br>via Gradients in Federated Learning</h1>
+<p align="center">
+  <a href="https://iclr.cc/Conferences/2023"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/figures/iclr-logo-dark.svg">
+    <img src="assets/figures/iclr-logo.svg" alt="ICLR 2023" height="36">
+  </picture></a>
+  &nbsp;&nbsp;&nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/figures/affiliation-buaa-cst-dark.png">
+    <img src="assets/figures/affiliation-buaa-cst.png" alt="Beihang University, School of Cyber Science and Technology" height="36">
+  </picture>
+</p>
 
 <p align="center">
   <a href="https://openreview.net/forum?id=FIrQfNSOoTr"><img src="https://img.shields.io/badge/ICLR-2023-4b44ce.svg" alt="ICLR 2023"></a>
@@ -17,35 +25,6 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
   <img src="https://img.shields.io/badge/Python-3.9%2B-3776ab.svg" alt="Python 3.9+">
   <img src="https://img.shields.io/badge/PyTorch-ee4c2c.svg" alt="PyTorch">
-</p>
-
-<p align="center">
-  Kailang Ma<sup>*</sup>, Yu Sun<sup>*&dagger;</sup>, Jian Cui, Dawei Li, Zhenyu Guan, Jianwei Liu<br>
-  School of Cyber Science and Technology, Beihang University<br>
-  <sub><sup>*</sup>Co-first authors &nbsp; <sup>&dagger;</sup>Corresponding author</sub>
-</p>
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/figures/affiliation-buaa-cst-dark.png">
-    <img src="assets/figures/affiliation-buaa-cst.png" alt="Beihang University, School of Cyber Science and Technology" height="40">
-  </picture>
-</p>
-
-<p align="center">
-  <a href="https://openreview.net/forum?id=FIrQfNSOoTr"><b>Paper</b></a> &nbsp;|&nbsp;
-  <a href="https://openreview.net/pdf?id=FIrQfNSOoTr"><b>PDF</b></a> &nbsp;|&nbsp;
-  <a href="https://iclr.cc/media/iclr-2023/Slides/11872.pdf"><b>Slides</b></a> &nbsp;|&nbsp;
-  <a href="https://slideslive.com/38999096/instancewise-batch-label-restoration-via-gradients-in-federated-learning"><b>Talk</b></a>
-</p>
-
-<p align="center">
-  <a href="#overview">Overview</a> &nbsp;|&nbsp;
-  <a href="#results">Results</a> &nbsp;|&nbsp;
-  <a href="#installation">Installation</a> &nbsp;|&nbsp;
-  <a href="#quick-start">Quick start</a> &nbsp;|&nbsp;
-  <a href="#reproducing-the-paper">Reproducing the paper</a> &nbsp;|&nbsp;
-  <a href="#citation">Citation</a>
 </p>
 
 <a name="overview"></a>
