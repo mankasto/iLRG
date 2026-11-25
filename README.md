@@ -1,6 +1,13 @@
-<h1 align="center">iLRG</h1>
+<p align="center">
+  <a href="https://iclr.cc/Conferences/2023">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/figures/iclr-logo-dark.svg">
+      <img src="assets/figures/iclr-logo.svg" alt="ICLR 2023" height="48">
+    </picture>
+  </a>
+</p>
 
-<h3 align="center">Instance-wise Batch Label Restoration via Gradients in Federated Learning</h3>
+<h1 align="center">iLRG: Instance-wise Batch Label Restoration<br>via Gradients in Federated Learning</h1>
 
 <p align="center">
   <a href="https://openreview.net/forum?id=FIrQfNSOoTr"><img src="https://img.shields.io/badge/ICLR-2023-4b44ce.svg" alt="ICLR 2023"></a>
