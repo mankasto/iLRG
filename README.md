@@ -19,6 +19,13 @@
 </p>
 
 <p align="center">
+  <a href="https://openreview.net/forum?id=FIrQfNSOoTr"><b>Paper</b></a> &nbsp;|&nbsp;
+  <a href="https://openreview.net/pdf?id=FIrQfNSOoTr"><b>PDF</b></a> &nbsp;|&nbsp;
+  <a href="https://iclr.cc/media/iclr-2023/Slides/11872.pdf"><b>Slides</b></a> &nbsp;|&nbsp;
+  <a href="https://slideslive.com/38999096/instancewise-batch-label-restoration-via-gradients-in-federated-learning"><b>Talk</b></a>
+</p>
+
+<p align="center">
   <a href="#overview">Overview</a> &nbsp;|&nbsp;
   <a href="#results">Results</a> &nbsp;|&nbsp;
   <a href="#installation">Installation</a> &nbsp;|&nbsp;
