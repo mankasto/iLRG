@@ -23,10 +23,10 @@ from .defense import params
 from .methods import get_emb
 from .models import get_model
 from .options import options
-from .train import Classification, iter_train, train
-from .utils import (AverageMeter, Config, collect_cls_variables, degrade_grads, get_data, get_dataloader,
-                    get_device, get_grads, get_irlg_res, get_log_file, get_other_res, get_params_string,
-                    post_process_emb, print_util, set_random_seed)
+from .train import train_model, training_config
+from .utils import (AverageMeter, collect_cls_variables, degrade_grads, get_data, get_device, get_grads,
+                    get_irlg_res, get_log_file, get_other_res, get_params_string, post_process_emb, print_util,
+                    set_random_seed)
 
 TRIAL_SEPARATOR = '*' * 63
 SUMMARY_SEPARATOR = '-' * 63
@@ -79,29 +79,7 @@ def load_or_train_model(args, model, train_data, valid_data, device, log_file):
         print_util(f'Model loaded from file {file}.', log_file=log_file)
     except FileNotFoundError:
         print_util('Training the model ...', log_file=log_file)
-        defs = Config({'iter_train': args.iter_train,
-                       'epochs': args.epochs,
-                       'iterations': args.iters,
-                       'batch_size': args.batch_size,
-                       'optimizer': args.optimizer,
-                       'lr': args.lr,
-                       'scheduler': args.scheduler,
-                       'weight_decay': args.weight_decay,
-                       'warmup': args.warmup,
-                       'epoch_interval': args.epoch_interval,
-                       'iter_interval': args.iter_interval,
-                       'dryrun': args.dryrun,
-                       'model': args.model,
-                       'dataset': args.dataset,
-                       'mid_save': args.mid_save,
-                       'save_dir': args.model_path})
-        setup = dict(device=device, dtype=torch.float)
-        train_loader = get_dataloader(train_data, batch_size=defs.batch_size, shuffle=True)
-        valid_loader = get_dataloader(valid_data, batch_size=defs.batch_size, shuffle=False)
-        if args.iter_train:
-            iter_train(model, Classification(), train_loader, valid_loader, defs, setup=setup)
-        else:
-            train(model, Classification(), train_loader, valid_loader, defs, setup=setup)
+        train_model(model, training_config(args), train_data, valid_data, setup=dict(device=device, dtype=torch.float))
 
 
 def image_mean_std(dataset, device):

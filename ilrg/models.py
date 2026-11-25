@@ -3,6 +3,26 @@ import torchvision
 import torch.nn as nn
 from torchvision.models.resnet import BasicBlock, Bottleneck
 
+# Convolution layers per block of each VGG depth
+VGG_BLOCKS = {'vgg11': [1, 1, 2, 2, 2],
+              'vgg13': [2, 2, 2, 2, 2],
+              'vgg16': [2, 2, 3, 3, 3],
+              'vgg19': [2, 2, 4, 4, 4]}
+# Residual block type and blocks per stage of each ResNet depth
+RESNET_LAYERS = {'resnet18': (BasicBlock, [2, 2, 2, 2]),
+                 'resnet34': (BasicBlock, [3, 4, 6, 3]),
+                 'resnet50': (Bottleneck, [3, 4, 6, 3]),
+                 'resnet101': (Bottleneck, [3, 4, 23, 3]),
+                 'resnet152': (Bottleneck, [3, 8, 36, 3])}
+
+
+def _activation(silu=False, leaky_relu=False, negative_slope=0.01):
+    if silu:
+        return nn.SiLU()
+    if leaky_relu:
+        return nn.LeakyReLU(negative_slope=negative_slope)
+    return nn.ReLU()
+
 
 # Models
 # Only for MNIST
@@ -33,16 +53,14 @@ class LeNet5(nn.Module):
         super(LeNet5, self).__init__()
         self.block1 = nn.Sequential(nn.Conv2d(channel, 6, kernel_size=5, stride=1, padding=0),
                                     nn.BatchNorm2d(6) if bn else nn.Identity(),
-                                    nn.SiLU() if silu else nn.LeakyReLU(negative_slope=ns) if leaky_relu else nn.ReLU(),
+                                    _activation(silu, leaky_relu, ns),
                                     nn.MaxPool2d(kernel_size=2, stride=2))
         self.block2 = nn.Sequential(nn.Conv2d(6, 16, kernel_size=5, stride=1, padding=0),
                                     nn.BatchNorm2d(16) if bn else nn.Identity(),
-                                    nn.SiLU() if silu else nn.LeakyReLU(negative_slope=ns) if leaky_relu else nn.ReLU(),
+                                    _activation(silu, leaky_relu, ns),
                                     nn.MaxPool2d(kernel_size=2, stride=2))
-        self.nlt1 = nn.Sequential(nn.Linear(hidden, 120),
-                                  nn.SiLU() if silu else nn.LeakyReLU(negative_slope=ns) if leaky_relu else nn.ReLU())
-        self.nlt2 = nn.Sequential(nn.Linear(120, 84),
-                                  nn.SiLU() if silu else nn.LeakyReLU(negative_slope=ns) if leaky_relu else nn.ReLU())
+        self.nlt1 = nn.Sequential(nn.Linear(hidden, 120), _activation(silu, leaky_relu, ns))
+        self.nlt2 = nn.Sequential(nn.Linear(120, 84), _activation(silu, leaky_relu, ns))
         self.fc = torch.nn.Linear(84, num_classes)
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -232,29 +250,11 @@ def get_model(model_name,
                        leaky_relu=leaky_relu)
     elif model_name == 'lenetzhu':
         model = LeNetZhu(channel=channel, hidden=hidden, num_classes=num_classes)
-    elif model_name == 'vgg11':
-        model = VGG([1, 1, 2, 2, 2], hidden=hidden, num_classes=num_classes, dropout=dropout)
-    elif model_name == 'vgg13':
-        model = VGG([2, 2, 2, 2, 2], hidden=hidden, num_classes=num_classes, dropout=dropout)
-    elif model_name == 'vgg16':
-        model = VGG([2, 2, 3, 3, 3], hidden=hidden, num_classes=num_classes, dropout=dropout)
-    elif model_name == 'vgg19':
-        model = VGG([2, 2, 4, 4, 4], hidden=hidden, num_classes=num_classes, dropout=dropout)
-    elif model_name == 'resnet18':
-        model = ResNet(torchvision.models.resnet.BasicBlock, [2, 2, 2, 2],
-                       num_classes=num_classes, base_width=64, channel=channel)
-    elif model_name == 'resnet34':
-        model = ResNet(torchvision.models.resnet.BasicBlock, [3, 4, 6, 3],
-                       num_classes=num_classes, base_width=64, channel=channel)
-    elif model_name == 'resnet50':
-        model = ResNet(torchvision.models.resnet.Bottleneck, [3, 4, 6, 3],
-                       num_classes=num_classes, base_width=64, channel=channel)
-    elif model_name == 'resnet101':
-        model = ResNet(torchvision.models.resnet.Bottleneck, [3, 4, 23, 3],
-                       num_classes=num_classes, base_width=64, channel=channel)
-    elif model_name == 'resnet152':
-        model = ResNet(torchvision.models.resnet.Bottleneck, [3, 8, 36, 3],
-                       num_classes=num_classes, base_width=64, channel=channel)
+    elif model_name in VGG_BLOCKS:
+        model = VGG(VGG_BLOCKS[model_name], hidden=hidden, num_classes=num_classes, dropout=dropout)
+    elif model_name in RESNET_LAYERS:
+        block, layers = RESNET_LAYERS[model_name]
+        model = ResNet(block, layers, num_classes=num_classes, base_width=64, channel=channel)
     else:
         raise NotImplementedError('Model not implemented.')
     model = model.to(device)

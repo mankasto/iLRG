@@ -10,9 +10,31 @@ from .loss import Classification
 from .datasets import get_dataset
 from collections import defaultdict
 from .scheduler import GradualWarmupScheduler
-from .utils import Config, get_device, get_dataloader
+from .utils import Config, get_device, get_dataloader, lr_milestones
 
 NON_BLOCKING = False
+WARMUP_MULTIPLIER = 10
+WARMUP_STEPS = 10
+
+
+def training_config(args):
+    """Training settings from the parsed command-line options."""
+    return Config({'iter_train': args.iter_train,
+                   'epochs': args.epochs,
+                   'iterations': args.iters,
+                   'batch_size': args.batch_size,
+                   'optimizer': args.optimizer,
+                   'lr': args.lr,
+                   'scheduler': args.scheduler,
+                   'weight_decay': args.weight_decay,
+                   'warmup': args.warmup,
+                   'epoch_interval': args.epoch_interval,
+                   'iter_interval': args.iter_interval,
+                   'dryrun': args.dryrun,
+                   'model': args.model,
+                   'dataset': args.dataset,
+                   'mid_save': args.mid_save,
+                   'save_dir': args.model_path})
 
 
 def set_optimizer(model, defs):
@@ -28,13 +50,12 @@ def set_optimizer(model, defs):
         optimizer = torch.optim.AdamW(model.parameters(), lr=defs.lr, weight_decay=defs.weight_decay)
 
     if defs.scheduler == 'linear':
-        milestone = defs.iterations if defs.iter_train else defs.epochs
-        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,
-                                                         milestones=[milestone // 2.667, milestone // 1.6,
-                                                                     milestone // 1.142], gamma=0.1)
+        total_steps = defs.iterations if defs.iter_train else defs.epochs
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=lr_milestones(total_steps), gamma=0.1)
 
     if defs.warmup:
-        scheduler = GradualWarmupScheduler(optimizer, multiplier=10, total_epoch=10, after_scheduler=scheduler)
+        scheduler = GradualWarmupScheduler(optimizer, multiplier=WARMUP_MULTIPLIER, total_epoch=WARMUP_STEPS,
+                                           after_scheduler=scheduler)
 
     return optimizer, scheduler
 
@@ -95,14 +116,10 @@ def print_status(loss_fn, optimizer, defs, stats, epoch=0, iteration=0):
     """Print basic console printout every defs.validation epochs."""
     current_lr = optimizer.param_groups[0]['lr']
     name, pt_format = loss_fn.metric()
-    if defs.iter_train:
-        print(f'Iteration: {iteration + 1}| lr: {current_lr:.4f} | '
-              f'Train loss is {stats["train_losses"][-1]:6.4f}, Train {name}: {stats["train_" + name][-1]:{pt_format}} | '
-              f'Val loss is {stats["valid_losses"][-1]:6.4f}, Val {name}: {stats["valid_" + name][-1]:{pt_format}} |')
-    else:
-        print(f'Epoch: {epoch + 1}| lr: {current_lr:.4f} | '
-              f'Train loss is {stats["train_losses"][-1]:6.4f}, Train {name}: {stats["train_" + name][-1]:{pt_format}} | '
-              f'Val loss is {stats["valid_losses"][-1]:6.4f}, Val {name}: {stats["valid_" + name][-1]:{pt_format}} |')
+    step_name, step_index = ('Iteration', iteration) if defs.iter_train else ('Epoch', epoch)
+    print(f'{step_name}: {step_index + 1}| lr: {current_lr:.4f} | '
+          f'Train loss is {stats["train_losses"][-1]:6.4f}, Train {name}: {stats["train_" + name][-1]:{pt_format}} | '
+          f'Val loss is {stats["valid_losses"][-1]:6.4f}, Val {name}: {stats["valid_" + name][-1]:{pt_format}} |')
 
 
 def validate(model, loss_fn, dataloader, defs, setup, stats):
@@ -198,24 +215,17 @@ def iter_train(model, loss_fn, trainloader, validloader, defs,
     return stats
 
 
+def train_model(model, defs, train_data, valid_data, setup):
+    """Train by epochs or by iterations, as defs says, and save the final checkpoint."""
+    train_loader = get_dataloader(train_data, batch_size=defs.batch_size, shuffle=True)
+    valid_loader = get_dataloader(valid_data, batch_size=defs.batch_size, shuffle=False)
+    run_training = iter_train if defs.iter_train else train
+    return run_training(model, Classification(), train_loader, valid_loader, defs, setup=setup)
+
+
 if __name__ == '__main__':
     args = options().parse_args()
-    defs = Config({'iter_train': args.iter_train,
-                   'epochs': args.epochs,
-                   'iterations': args.iters,
-                   'batch_size': args.batch_size,
-                   'optimizer': args.optimizer,
-                   'lr': args.lr,
-                   'scheduler': args.scheduler,
-                   'weight_decay': args.weight_decay,
-                   'warmup': args.warmup,
-                   'epoch_interval': args.epoch_interval,
-                   'iter_interval': args.iter_interval,
-                   'dryrun': args.dryrun,
-                   'model': args.model,
-                   'dataset': args.dataset,
-                   'mid_save': args.mid_save,
-                   'save_dir': args.model_path})
+    defs = training_config(args)
     device = get_device(use_cuda=False if args.cpu else True)
     setup = dict(device=device, dtype=torch.float)
 
@@ -224,18 +234,12 @@ if __name__ == '__main__':
                                  model=args.model)
     img_shape, num_classes, channel, hidden, dataset = dataset_params
     train_data, valid_data = dataset
-    train_loader = get_dataloader(train_data, batch_size=defs.batch_size, shuffle=True)
-    valid_loader = get_dataloader(valid_data, batch_size=defs.batch_size, shuffle=False)
     model = get_model(model_name=args.model,
                       net_params=(num_classes, channel, hidden),
                       device=device,
                       batchnorm=args.batchnorm,
                       dropout=args.dropout,
                       silu=args.silu)
-    criterion = Classification()
-    if args.iter_train:
-        stats = iter_train(model, criterion, train_loader, valid_loader, defs, setup=setup)
-    else:
-        stats = train(model, criterion, train_loader, valid_loader, defs, setup=setup)
+    stats = train_model(model, defs, train_data, valid_data, setup)
     stats = defaultdict(list)
     print(stats)

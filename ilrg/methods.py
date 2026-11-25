@@ -109,91 +109,48 @@ def get_emb(grad_w, grad_b, exp_thre=10):
     return res
 
 
-# Recover Labels
 def iLRG(probs, grad_b, n_classes, n_images):
-    # Solve linear equations to recover labels
-    coefs, values = [], []
-    # Add the first equation: k1+k2+...+kc=K
-    coefs.append([1 for _ in range(n_classes)])
-    values.append(n_images)
-    # Add the following equations
-    for i in range(n_classes):
-        coef = []
-        for j in range(n_classes):
-            if j != i:
-                coef.append(probs[j][i].item())
-            else:
-                coef.append(probs[j][i].item() - 1)
-        coefs.append(coef)
-        values.append(n_images * grad_b[i])
-    # Convert into numpy ndarray
-    coefs = np.array(coefs)
-    values = np.array(values)
-    # Solve with Moore-Penrose pseudoinverse
-    res_float = np.linalg.pinv(coefs).dot(values)
-    # Filter negative values
-    res = np.where(res_float > 0, res_float, 0)
-    # Round values
-    res = np.round(res).astype(int)
-    res = np.where(res <= n_images, res, 0)
-    err = res - res_float
-    num_mod = np.sum(res) - n_images
-    if num_mod > 0:
-        inds = np.argsort(-err)
-        mod_inds = inds[:num_mod]
-        mod_res = res.copy()
-        mod_res[mod_inds] -= 1
-    elif num_mod < 0:
-        inds = np.argsort(err)
-        mod_inds = inds[:num_mod]
-        mod_res = res.copy()
-        mod_res[mod_inds] += 1
-    else:
-        mod_res = res
-
-    return res, mod_res
+    """Restore the number of instances of every class from the fc-layer bias gradient."""
+    return _solve_label_counts(probs, grad_b, range(n_classes), n_images)
 
 
-# Have Known about which labels exist
 def sim_iLRG(probs, grad_b, exist_labels, n_images):
-    # Solve linear equations to recover labels
-    coefs, values = [], []
-    # Add the first equation: k1+k2+...+kc=K
-    coefs.append([1 for _ in range(len(exist_labels))])
-    values.append(n_images)
-    # Add the following equations
-    for i in exist_labels:
-        coef = []
-        for j in exist_labels:
-            if j != i:
-                coef.append(probs[j][i].item())
-            else:
-                coef.append(probs[j][i].item() - 1)
-        coefs.append(coef)
+    """Restore the instance counts when the classes present in the batch are known."""
+    return _solve_label_counts(probs, grad_b, exist_labels, n_images)
+
+
+def _solve_label_counts(probs, grad_b, classes, n_images):
+    """Solve iLRG's linear system for the instance count k_j of each class j in `classes`.
+
+    The equations are sum_j k_j = n_images and, for each class i,
+    sum_j k_j * (probs[j][i] - [i == j]) = n_images * grad_b[i], where probs[j] are the
+    restored average probabilities of class j. They are solved in the least-squares sense.
+    """
+    coefs, values = [[1 for _ in classes]], [n_images]
+    for i in classes:
+        coefs.append([probs[j][i].item() - 1 if j == i else probs[j][i].item() for j in classes])
         values.append(n_images * grad_b[i])
-    # Convert into numpy ndarray
-    coefs = np.array(coefs)
-    values = np.array(values)
-    # Solve with Moore-Penrose pseudoinverse
-    res_float = np.linalg.pinv(coefs).dot(values)
-    # Filter negative values
+    res_float = np.linalg.pinv(np.array(coefs)).dot(np.array(values))
+    return _round_counts(res_float, n_images)
+
+
+def _round_counts(res_float, n_images):
+    """Round the least-squares counts (negative ones and ones above n_images become 0).
+
+    Returns the rounded counts and a copy adjusted by one per class, chosen by rounding error,
+    towards a total of n_images.
+    """
     res = np.where(res_float > 0, res_float, 0)
-    # Round values
     res = np.round(res).astype(int)
     res = np.where(res <= n_images, res, 0)
     err = res - res_float
     num_mod = np.sum(res) - n_images
     if num_mod > 0:
-        inds = np.argsort(-err)
-        mod_inds = inds[:num_mod]
         mod_res = res.copy()
-        mod_res[mod_inds] -= 1
+        mod_res[np.argsort(-err)[:num_mod]] -= 1
     elif num_mod < 0:
-        inds = np.argsort(err)
-        mod_inds = inds[:num_mod]
         mod_res = res.copy()
-        mod_res[mod_inds] += 1
+        mod_res[np.argsort(err)[:num_mod]] += 1
     else:
         mod_res = res
-
     return res, mod_res

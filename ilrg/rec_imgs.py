@@ -5,11 +5,20 @@ import time
 import torch
 import torchvision
 
-from .utils import get_target_data
+from .utils import get_target_data, lr_milestones
 from collections import defaultdict
 from .medianfilt import MedianPool2d
 from .metrics import InceptionScore
 from .metrics import total_variation as TV
+
+SGD_LR = 0.01
+SGD_MOMENTUM = 0.9
+MEDIAN_FILTER_SIZE = 3
+# --indices choices: how many parameter gradients enter the cost
+TOP_NORM_COUNTS = {'topk-1': 4, 'top10': 10, 'top20': 20, 'top30': 30, 'top50': 50}
+FIRST_COUNTS = {'first': 4, 'first4': 4, 'first5': 5, 'first10': 10, 'first50': 50}
+LAST_COUNTS = {'last5': 5, 'last10': 10, 'last50': 50}
+RANDOM_SUBSET_SIZE = 8
 
 
 class GradientReconstructor:
@@ -108,41 +117,18 @@ class GradientReconstructor:
         if self.reconstruct_label:
             output_test = self.model(x_trial)[0]
             labels = torch.randn(output_test.shape[1]).to(**self.setup).requires_grad_(True)
-
-            if self.config['optim'] == 'adam':
-                optimizer = torch.optim.Adam([x_trial, labels], lr=self.config['lr'])
-            elif self.config['optim'] == 'sgd':  # actually gd
-                optimizer = torch.optim.SGD([x_trial, labels], lr=0.01, momentum=0.9, nesterov=True)
-            elif self.config['optim'] == 'LBFGS':
-                optimizer = torch.optim.LBFGS([x_trial, labels])
-            else:
-                raise ValueError()
+            optimizer = self._optimizer([x_trial, labels])
         else:
-            if self.config['optim'] == 'adam':
-                optimizer = torch.optim.Adam([x_trial], lr=self.config['lr'])
-            elif self.config['optim'] == 'sgd':  # actually gd
-                optimizer = torch.optim.SGD([x_trial], lr=0.01, momentum=0.9, nesterov=True)
-            elif self.config['optim'] == 'LBFGS':
-                optimizer = torch.optim.LBFGS([x_trial])
-            else:
-                raise ValueError()
+            optimizer = self._optimizer([x_trial])
 
         max_iterations = self.config['max_iterations']
         dm, ds = self.mean_std
         if self.config['lr_decay']:
-            scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,
-                                                             milestones=[max_iterations // 2.667, max_iterations // 1.6,
-
-                                                                         max_iterations // 1.142],
-                                                             gamma=0.1)  # 3/8 5/8 7/8
+            scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=lr_milestones(max_iterations),
+                                                             gamma=0.1)
         try:
             if self.config['init'] == 'auxiliary':
-                if self.config['filter'] == 'none':
-                    pass
-                elif self.config['filter'] == 'median':
-                    x_trial.data = MedianPool2d(kernel_size=3, stride=1, padding=1, same=False)(x_trial)
-                else:
-                    raise ValueError()
+                self._filter(x_trial)
                 aux_den = torch.clamp(x_trial * ds + dm, 0, 1)
                 for j in range(self.num_images):
                     filename = f'aux_{j}.png'
@@ -166,12 +152,7 @@ class GradientReconstructor:
                         print(f'It: {iteration}. Rec. loss: {rec_loss.item():2.4f}.')
 
                     if (iteration + 1) % save_interval == 0 or iteration == 0:
-                        if self.config['filter'] == 'none':
-                            pass
-                        elif self.config['filter'] == 'median':
-                            x_trial.data = MedianPool2d(kernel_size=3, stride=1, padding=1, same=False)(x_trial)
-                        else:
-                            raise ValueError()
+                        self._filter(x_trial)
                         output_den = torch.clamp(x_trial * ds + dm, 0, 1)
                         for j in range(self.num_images):
                             filename = f'rec_{j}.png'
@@ -186,6 +167,24 @@ class GradientReconstructor:
             print(f'Recovery interrupted manually in iteration {iteration}!')
             pass
         return x_trial.detach(), labels
+
+    def _optimizer(self, variables):
+        if self.config['optim'] == 'adam':
+            return torch.optim.Adam(variables, lr=self.config['lr'])
+        if self.config['optim'] == 'sgd':  # actually gd
+            return torch.optim.SGD(variables, lr=SGD_LR, momentum=SGD_MOMENTUM, nesterov=True)
+        if self.config['optim'] == 'LBFGS':
+            return torch.optim.LBFGS(variables)
+        raise ValueError()
+
+    def _filter(self, x_trial):
+        """Apply the configured image filter ('none' or 'median') to x_trial in place."""
+        if self.config['filter'] == 'none':
+            return
+        if self.config['filter'] == 'median':
+            x_trial.data = MedianPool2d(kernel_size=MEDIAN_FILTER_SIZE, stride=1, padding=1, same=False)(x_trial)
+        else:
+            raise ValueError()
 
     def _gradient_closure(self, optimizer, x_trial, input_gradient, label):
 
@@ -248,40 +247,28 @@ class GradientReconstructor:
         return x_optimal, stats
 
 
-def reconstruction_costs(gradients, input_gradient, cost_fn='l2', indices='def', weights='equal'):
-    """Input gradient is given data."""
+def _gradient_indices(indices, input_gradient):
+    """Positions in the parameter list whose gradients enter the cost (see --indices)."""
     if isinstance(indices, list):
-        pass
-    elif indices == 'def':
-        indices = torch.arange(len(input_gradient))
-    elif indices == 'batch':
-        indices = torch.randperm(len(input_gradient))[:8]
-    elif indices == 'topk-1':
-        _, indices = torch.topk(torch.stack([p.norm() for p in input_gradient], dim=0), 4)
-    elif indices == 'top10':
-        _, indices = torch.topk(torch.stack([p.norm() for p in input_gradient], dim=0), 10)
-    elif indices == 'top20':
-        _, indices = torch.topk(torch.stack([p.norm() for p in input_gradient], dim=0), 20)
-    elif indices == 'top30':
-        _, indices = torch.topk(torch.stack([p.norm() for p in input_gradient], dim=0), 30)
-    elif indices == 'top50':
-        _, indices = torch.topk(torch.stack([p.norm() for p in input_gradient], dim=0), 50)
-    elif indices in ['first', 'first4']:
-        indices = torch.arange(0, 4)
-    elif indices == 'first5':
-        indices = torch.arange(0, 5)
-    elif indices == 'first10':
-        indices = torch.arange(0, 10)
-    elif indices == 'first50':
-        indices = torch.arange(0, 50)
-    elif indices == 'last5':
-        indices = torch.arange(len(input_gradient))[-5:]
-    elif indices == 'last10':
-        indices = torch.arange(len(input_gradient))[-10:]
-    elif indices == 'last50':
-        indices = torch.arange(len(input_gradient))[-50:]
-    else:
-        raise ValueError()
+        return indices
+    if indices == 'def':
+        return torch.arange(len(input_gradient))
+    if indices == 'batch':
+        return torch.randperm(len(input_gradient))[:RANDOM_SUBSET_SIZE]
+    if indices in TOP_NORM_COUNTS:
+        _, top_indices = torch.topk(torch.stack([p.norm() for p in input_gradient], dim=0),
+                                    TOP_NORM_COUNTS[indices])
+        return top_indices
+    if indices in FIRST_COUNTS:
+        return torch.arange(0, FIRST_COUNTS[indices])
+    if indices in LAST_COUNTS:
+        return torch.arange(len(input_gradient))[-LAST_COUNTS[indices]:]
+    raise ValueError()
+
+
+def reconstruction_costs(gradients, input_gradient, cost_fn='l2', indices='def', weights='equal'):
+    """Distance between trial gradients and the given gradient, averaged over the trials."""
+    indices = _gradient_indices(indices, input_gradient)
 
     ex = input_gradient[0]
     if weights == 'linear':

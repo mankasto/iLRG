@@ -4,6 +4,8 @@ import lpips
 import torch
 import numpy as np
 
+from .metrics import psnr
+
 
 def get_images(images_list, img_size=28):
     images = []
@@ -16,30 +18,6 @@ def get_images(images_list, img_size=28):
         images.append(image)
     images = torch.stack(images).to(device)
     return images
-
-
-def psnr(img_batch, ref_batch, batched=False, factor=1.0):
-    """Standard PSNR."""
-
-    def get_psnr(img_in, img_ref):
-        mse = ((img_in - img_ref) ** 2).mean()
-        if mse > 0 and torch.isfinite(mse):
-            return 10 * torch.log10(factor ** 2 / mse)
-        elif not torch.isfinite(mse):
-            return img_batch.new_tensor(float('nan'))
-        else:
-            return img_batch.new_tensor(float('inf'))
-
-    if batched:
-        psnr = get_psnr(img_batch.detach(), ref_batch)
-    else:
-        [B, C, m, n] = img_batch.shape
-        psnrs = []
-        for sample in range(B):
-            psnrs.append(get_psnr(img_batch.detach()[sample, :, :, :], ref_batch[sample, :, :, :]))
-        psnr = torch.stack(psnrs, dim=0).mean()
-
-    return psnr.item()
 
 
 if __name__ == '__main__':
