@@ -2,33 +2,40 @@ import torch
 import numpy as np
 
 
+# get_emb clips the decimal exponent gap between weight and bias gradients to this value
+MAX_EXPONENT_GAP = 10
+# Decimal exponent given to a zero bias gradient (with mantissa 1)
+ZERO_BIAS_EXPONENT = -64
+
+
 def solve_lp(A, b, c):
+    """SVD baseline: whether the LP min c'x subject to A x <= b separates column 0 from the others."""
     from cvxopt import matrix, solvers
     solvers.options['show_progress'] = False
     np.random.seed(None)
-    for _ in range(1):
-        A, b, c = matrix(A), matrix(b), matrix(c)
-        sol = solvers.lp(c, A, b)
-        x = sol['x']
-        if x is not None:
-            ret = A * x
-            if ret[0] < -0.1 and np.max(ret[1:]) < 1e-2 and np.count_nonzero(np.array(ret[1:]) <= 0) > 0.5 * len(ret):
-                return True
+    A, b, c = matrix(A), matrix(b), matrix(c)
+    x = solvers.lp(c, A, b)['x']
+    if x is None:
+        return False
+    ret = A * x
+    if ret[0] < -0.1 and np.max(ret[1:]) < 1e-2 and np.count_nonzero(np.array(ret[1:]) <= 0) > 0.5 * len(ret):
+        return True
     return False
 
 
 def solve_perceptron(X, y, fit_intercept=True, max_iter=1000, tol=1e-3, eta0=1.):
+    """SVD baseline: whether a perceptron separates the samples X by the labels y (score above 0.9)."""
     from sklearn.linear_model import Perceptron
     clf = Perceptron(fit_intercept=fit_intercept, max_iter=max_iter, tol=tol, eta0=eta0)
     clf.fit(X, y)
-    if not fit_intercept:
-        pass
     if clf.score(X, y) > 0.9:
         return True
     return False
 
 
 def svd_infer(A, num_classes=1000, gt_k=None, epsilon=1e-8):
+    """SVD baseline: classes whose coordinates in the top singular subspace of A (m x n) pass a
+    perceptron and a linear-programming separability test."""
     m, n = np.shape(A)
     B, s, C = np.linalg.svd(A, full_matrices=False)
     pred_k = np.linalg.matrix_rank(A)
@@ -68,45 +75,40 @@ def svd_infer(A, num_classes=1000, gt_k=None, epsilon=1e-8):
     return ret_bow
 
 
-# Extended GradientInversion, w_grad: m * n.
 def gi_infer(w_grad):
+    """Extended GradInversion: classes with a negative entry in their column of w_grad (m x n)."""
     ret = (torch.min(w_grad, dim=0)[0] < 0).nonzero(as_tuple=False).squeeze().numpy()
     ret = [ret] if ret.shape == () else ret
     return ret
 
 
-# Extended iDLG
 def idlg_infer(w_grad):
+    """Extended iDLG: classes whose column of w_grad (m x n) sums to a negative value."""
     ret = (torch.sum(w_grad, dim=0) < 0).nonzero(as_tuple=False).squeeze().numpy()
     ret = [ret] if ret.shape == () else ret
     return ret
 
 
-# Recover embeddings
-def get_emb(grad_w, grad_b, exp_thre=10):
-    # Split scientific count notation
+def get_emb(grad_w, grad_b, max_exponent_gap=MAX_EXPONENT_GAP):
+    """Restore a class's average embedding as its weight-gradient row divided by its bias gradient.
+
+    Mantissas and decimal exponents are divided separately, with the exponent gap clipped to
+    +/- max_exponent_gap, so a tiny bias gradient cannot blow the result up.
+    """
     sc_grad_b = '%e' % grad_b
     sc_grad_w = ['%e' % w for w in grad_w]
     real_b, exp_b = float(sc_grad_b.split('e')[0]), int(sc_grad_b.split('e')[1])
-    real_w, exp_w = np.array([float(sc_w.split('e')[0]) for sc_w in sc_grad_w]), \
-                    np.array([int(sc_w.split('e')[1]) for sc_w in sc_grad_w])
-    # Deal with 0 case
+    real_w = np.array([float(sc_w.split('e')[0]) for sc_w in sc_grad_w])
+    exp_w = np.array([int(sc_w.split('e')[1]) for sc_w in sc_grad_w])
     if real_b == 0.:
         real_b = 1
-        exp_b = -64
-    # Deal with exponent value
+        exp_b = ZERO_BIAS_EXPONENT
     exp = exp_w - exp_b
-    exp = np.where(exp > exp_thre, exp_thre, exp)
-    exp = np.where(exp < -1 * exp_thre, -1 * exp_thre, exp)
-
-    def get_exp(x):
-        return 10 ** x if x >= 0 else 1. / 10 ** (-x)
-
-    exp = np.array(list(map(get_exp, exp)))
-    # Calculate recovered average embeddings for batch_i (samples of class i)
+    exp = np.where(exp > max_exponent_gap, max_exponent_gap, exp)
+    exp = np.where(exp < -1 * max_exponent_gap, -1 * max_exponent_gap, exp)
+    exp = np.array([10 ** x if x >= 0 else 1. / 10 ** (-x) for x in exp])
     res = (1. / real_b) * real_w * exp
-    res = torch.from_numpy(res).to(torch.float32)
-    return res
+    return torch.from_numpy(res).to(torch.float32)
 
 
 def iLRG(probs, grad_b, n_classes, n_images):

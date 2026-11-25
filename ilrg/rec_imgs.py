@@ -19,6 +19,8 @@ TOP_NORM_COUNTS = {'topk-1': 4, 'top10': 10, 'top20': 20, 'top30': 30, 'top50': 
 FIRST_COUNTS = {'first': 4, 'first4': 4, 'first5': 5, 'first10': 10, 'first50': 50}
 LAST_COUNTS = {'last5': 5, 'last10': 10, 'last50': 50}
 RANDOM_SUBSET_SIZE = 8
+PROGRESS_LINES = 100  # loss printouts per reconstruction
+SAVE_INTERVAL = 500  # iterations between image snapshots
 
 
 class GradientReconstructor:
@@ -75,7 +77,6 @@ class GradientReconstructor:
                     break
         except KeyboardInterrupt:
             print('Trial procedure manually interruped.')
-            pass
 
         # Choose optimal result:
         if self.config['scoring_choice'] in ['pixelmean', 'pixelmedian']:
@@ -135,10 +136,7 @@ class GradientReconstructor:
                     torchvision.utils.save_image(aux_den[j:j + 1, ...],
                                                  os.path.join(self.exp_dir, filename))
             print('start iteration steps')
-            start_iteration = 0
-            for iteration in range(start_iteration, max_iterations):
-                log_num = 100
-                save_interval = 500
+            for iteration in range(max_iterations):
                 closure = self._gradient_closure(optimizer, x_trial, input_data, labels)
                 rec_loss = optimizer.step(closure)
                 if self.config['lr_decay']:
@@ -148,10 +146,10 @@ class GradientReconstructor:
                     # Project into image space
                     if self.config['boxed']:
                         x_trial.data = torch.max(torch.min(x_trial, (1 - dm) / ds), -dm / ds)
-                    if (iteration + 1 == max_iterations) or iteration % (max(1, max_iterations / log_num)) == 0:
+                    if (iteration + 1 == max_iterations) or iteration % (max(1, max_iterations / PROGRESS_LINES)) == 0:
                         print(f'It: {iteration}. Rec. loss: {rec_loss.item():2.4f}.')
 
-                    if (iteration + 1) % save_interval == 0 or iteration == 0:
+                    if (iteration + 1) % SAVE_INTERVAL == 0 or iteration == 0:
                         self._filter(x_trial)
                         output_den = torch.clamp(x_trial * ds + dm, 0, 1)
                         for j in range(self.num_images):
@@ -165,7 +163,6 @@ class GradientReconstructor:
                     break
         except KeyboardInterrupt:
             print(f'Recovery interrupted manually in iteration {iteration}!')
-            pass
         return x_trial.detach(), labels
 
     def _optimizer(self, variables):
@@ -284,8 +281,6 @@ def reconstruction_costs(gradients, input_gradient, cost_fn='l2', indices='def',
     for trial_gradient in gradients:
         pnorm = [0, 0]
         costs = 0
-        if indices == 'topk-2':
-            _, indices = torch.topk(torch.stack([p.norm().detach() for p in trial_gradient], dim=0), 4)
         for i in indices:
             if cost_fn == 'l2':
                 costs += ((trial_gradient[i] - input_gradient[i]).pow(2)).sum() * weights[i]

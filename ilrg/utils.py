@@ -3,10 +3,8 @@ import re
 import torch
 import random
 import numpy as np
-import pandas as pd
 from collections import Counter
 from sklearn.metrics import accuracy_score
-import matplotlib.pyplot as plt
 from .consts import CUSTOM_DISTRIBUTION_CLASSES
 from .methods import iLRG, sim_iLRG, idlg_infer, gi_infer, svd_infer
 
@@ -18,17 +16,16 @@ LR_DECAY_DIVISORS = (2.667, 1.6, 1.142)
 
 
 class Config:
-    def __init__(self, entries: dict = {}):
-        self.__dict__.update(entries)
+    """Attribute access to a dict of settings."""
+
+    def __init__(self, entries=None):
+        self.__dict__.update(entries or {})
 
 
 class AverageMeter(object):
+    """Running average that keeps every value, for trimmed means (filter)."""
+
     def __init__(self):
-        self.val = 0
-        self.avg = 0
-        self.sum = 0
-        self.count = 0
-        self.bak = []
         self.reset()
 
     def reset(self):
@@ -46,6 +43,7 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
     def filter(self, ratio):
+        """Replace avg by the mean without the `ratio` share of smallest and of largest values."""
         self.avg = get_normal_mean(self.bak, ratio)
 
 
@@ -255,21 +253,13 @@ def collect_cls_variables(embeddings, outs, gt_label, num_classes, model, loss_f
     # Sample indexes for each class
     indexes = [np.where(gt_label.cpu().numpy() == i)[0] for i in range(num_classes)]
     cls_embeddings, cls_outs, cls_probs, cls_wgrad, cls_bgrad = {}, {}, {}, {}, {}
-    # mods = []
     for i in range(num_classes):
         if len(indexes[i]) > 0:
             # Average embeddings for batch_i (samples of class i)
             cls_embedding = embeddings[indexes[i]]
-            # print(cls_embedding)
-            cls_emb_mod = torch.norm(cls_embedding, dim=-1)
-            # mods.append(cls_emb_mod)
             cls_embeddings[i] = cls_embedding.mean(dim=0)
-            # print(cls_embeddings[i])
-            # print('*****************')
             # Average outputs for batch_i (samples of class i)
             cls_out = outs[indexes[i]]
-            # print(i, cls_embedding.sum(dim=-1), torch.var(cls_embedding.sum(dim=-1), dim=0))
-            # print(i, cls_out, torch.var(cls_out, dim=0))
             cls_outs[i] = cls_out.mean(dim=0)
             # Gt labels for batch_i (samples of class i)
             cls_label = gt_label[indexes[i]]
@@ -283,8 +273,6 @@ def collect_cls_variables(embeddings, outs, gt_label, num_classes, model, loss_f
             cls_wgrad[i], cls_bgrad[i] = cls_grads[0][i], cls_grads[1][i]
             # Average softmax Probabilities for batch_i (samples of class i)
             cls_probs[i] = torch.softmax(cls_out, dim=1).mean(dim=0)
-    # mods = torch.cat(mods)
-    # print(torch.min(mods), torch.max(mods), torch.var(mods))
     return indexes, cls_embeddings, cls_outs, cls_probs, cls_wgrad, cls_bgrad
 
 
@@ -293,12 +281,8 @@ def print_util(string, log_file):
     print(string, file=log_file)
 
 
-def cal_mse(x1, x2):
-    return torch.mean((x1.cpu() - x2.cpu()) ** 2)
-
-
-# Get ground-truth labels and its instance statistic
 def get_label_stats(gt_label, num_classes):
+    """Labels present in the batch, per-class existences, per-class counts and counts of present labels."""
     LabelCounter = dict(Counter(gt_label.cpu().numpy()))
     labels = list(sorted(LabelCounter.keys()))
     existences = [1 if i in labels else 0 for i in range(num_classes)]

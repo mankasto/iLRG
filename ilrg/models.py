@@ -3,6 +3,9 @@ import torchvision
 import torch.nn as nn
 from torchvision.models.resnet import BasicBlock, Bottleneck
 
+MNIST_INPUT_SIZE = 28 * 28
+MNIST_NUM_CLASSES = 10
+
 # Convolution layers per block of each VGG depth
 VGG_BLOCKS = {'vgg11': [1, 1, 2, 2, 2],
               'vgg13': [2, 2, 2, 2, 2],
@@ -24,23 +27,17 @@ def _activation(silu=False, leaky_relu=False, negative_slope=0.01):
     return nn.ReLU()
 
 
-# Models
-# Only for MNIST
 class DNN(nn.Module):
+    """Fully connected network for MNIST: input layer, n_hidden hidden layers, classification layer."""
+
     def __init__(self, n_hidden=1, dim=300):
         super(DNN, self).__init__()
-        self.fin = nn.Sequential(nn.Linear(784, dim), nn.ReLU())
-        self.hiddens = []
-        for i in range(n_hidden):
-            self.hiddens.append(nn.Sequential(
-                nn.Linear(dim, dim),
-                nn.ReLU()
-            ))
-        self.hiddens = nn.Sequential(*self.hiddens)
-        self.fc = nn.Linear(dim, 10)
+        self.fin = nn.Sequential(nn.Linear(MNIST_INPUT_SIZE, dim), nn.ReLU())
+        self.hiddens = nn.Sequential(*[nn.Sequential(nn.Linear(dim, dim), nn.ReLU()) for _ in range(n_hidden)])
+        self.fc = nn.Linear(dim, MNIST_NUM_CLASSES)
 
     def forward(self, x):
-        x = x.reshape(-1, 28 * 28)
+        x = x.reshape(-1, MNIST_INPUT_SIZE)
         x = self.fin(x)
         x = self.hiddens(x)
         y = self.fc(x)
@@ -167,7 +164,7 @@ class ResNet(torchvision.models.ResNet):
 
     def __init__(self, block, layers, num_classes=10, zero_init_residual=False,
                  groups=1, channel=3, base_width=64, replace_stride_with_dilation=None,
-                 norm_layer=None, strides=[1, 2, 2, 2], pool='avg'):
+                 norm_layer=None, strides=(1, 2, 2, 2), pool='avg'):
         """Initialize as usual. Layers and strides are scriptable."""
         super(torchvision.models.ResNet, self).__init__()  # nn.Module
         if norm_layer is None:

@@ -82,9 +82,6 @@ def step(model, loss_fn, dataloader, optimizer, scheduler, defs, setup, stats):
 
         metric, name, _ = loss_fn.metric(outputs, targets)
         epoch_metric += metric.item()
-
-        if defs.scheduler == 'cyclic':
-            scheduler.step()
     if defs.scheduler == 'linear':
         scheduler.step()
 
@@ -146,8 +143,10 @@ def validate(model, loss_fn, dataloader, defs, setup, stats):
     stats['valid_' + name].append(epoch_metric / (batch + 1))
 
 
-def train(model, loss_fn, trainloader, validloader, defs, setup=dict(dtype=torch.float, device=torch.device('cpu'))):
-    """Run the main interface. Train a network with specifications from the Strategy object."""
+def train(model, loss_fn, trainloader, validloader, defs, setup=None):
+    """Train for defs.epochs epochs, validating every defs.epoch_interval epochs, and save the model."""
+    if setup is None:
+        setup = dict(dtype=torch.float, device=torch.device('cpu'))
     stats = defaultdict(list)
     optimizer, scheduler = set_optimizer(model, defs)
 
@@ -179,9 +178,10 @@ def train(model, loss_fn, trainloader, validloader, defs, setup=dict(dtype=torch
     return stats
 
 
-def iter_train(model, loss_fn, trainloader, validloader, defs,
-               setup=dict(dtype=torch.float, device=torch.device('cpu'))):
-    """Run the main interface. Train a network with specifications from the Strategy object."""
+def iter_train(model, loss_fn, trainloader, validloader, defs, setup=None):
+    """Train for defs.iterations steps, validating every defs.iter_interval steps, and save the model."""
+    if setup is None:
+        setup = dict(dtype=torch.float, device=torch.device('cpu'))
     stats = defaultdict(list)
     optimizer, scheduler = set_optimizer(model, defs)
     epoch_iter = len(trainloader) / defs.batch_size

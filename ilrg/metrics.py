@@ -2,15 +2,15 @@
 import torch
 import torchvision
 
-from collections import defaultdict
-
 
 class InceptionScore(torch.nn.Module):
     """Class that manages and returns the inception score of images."""
 
-    def __init__(self, batch_size=32, setup=dict(device=torch.device('cpu'), dtype=torch.float)):
+    def __init__(self, batch_size=32, setup=None):
         """Initialize with setup and target inception batch size."""
         super().__init__()
+        if setup is None:
+            setup = dict(device=torch.device('cpu'), dtype=torch.float)
         self.preprocessing = torch.nn.Upsample(size=(299, 299), mode='bilinear', align_corners=False)
         self.model = torchvision.models.inception_v3(pretrained=True).to(**setup)
         self.model.eval()
@@ -61,52 +61,3 @@ def total_variation(x):
     dx = torch.mean(torch.abs(x[:, :, :, :-1] - x[:, :, :, 1:]))
     dy = torch.mean(torch.abs(x[:, :, :-1, :] - x[:, :, 1:, :]))
     return dx + dy
-
-
-def group_consistency(x, group_x):
-    mean_group_x = sum(group_x) / len(group_x)
-    return torch.norm(x - mean_group_x, p=3)
-
-
-def activation_errors(model, x1, x2):
-    """Compute activation-level error metrics for every module in the network."""
-    model.eval()
-
-    device = next(model.parameters()).device
-
-    hooks = []
-    data = defaultdict(dict)
-    inputs = torch.cat((x1, x2), dim=0)
-    separator = x1.shape[0]
-
-    def check_activations(self, input, output):
-        module_name = str(*[name for name, mod in model.named_modules() if self is mod])
-        try:
-            layer_inputs = input[0].detach()
-            residual = (layer_inputs[:separator] - layer_inputs[separator:]).pow(2)
-            se_error = residual.sum()
-            mse_error = residual.mean()
-            sim = torch.nn.functional.cosine_similarity(layer_inputs[:separator].flatten(),
-                                                        layer_inputs[separator:].flatten(),
-                                                        dim=0, eps=1e-8).detach()
-            data['se'][module_name] = se_error.item()
-            data['mse'][module_name] = mse_error.item()
-            data['sim'][module_name] = sim.item()
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except AttributeError:
-            pass
-
-    for name, module in model.named_modules():
-        hooks.append(module.register_forward_hook(check_activations))
-
-    try:
-        outputs = model(inputs.to(device))
-        for hook in hooks:
-            hook.remove()
-    except Exception as e:
-        for hook in hooks:
-            hook.remove()
-        raise
-
-    return data
