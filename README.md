@@ -26,6 +26,13 @@
 </p>
 
 <p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/figures/affiliation-buaa-cst-dark.png">
+    <img src="assets/figures/affiliation-buaa-cst.png" alt="Beihang University, School of Cyber Science and Technology" height="40">
+  </picture>
+</p>
+
+<p align="center">
   <a href="https://openreview.net/forum?id=FIrQfNSOoTr"><b>Paper</b></a> &nbsp;|&nbsp;
   <a href="https://openreview.net/pdf?id=FIrQfNSOoTr"><b>PDF</b></a> &nbsp;|&nbsp;
   <a href="https://iclr.cc/media/iclr-2023/Slides/11872.pdf"><b>Slides</b></a> &nbsp;|&nbsp;
@@ -83,7 +90,7 @@ number accuracy; CosSim: cosine similarity of the recovered post-softmax probabi
 ### Gradient inversion with restored labels
 
 <p align="center">
-  <img src="assets/figures/reconstruction-comparison.jpeg" width="620" alt="Gradient inversion with and without iLRG labels on MNIST and CIFAR-100">
+  <img src="assets/figures/reconstruction-comparison.jpeg" width="400" alt="Gradient inversion with and without iLRG labels on MNIST and CIFAR-100">
 </p>
 
 Batch reconstruction on MNIST (FCN-3, batch size 50) and CIFAR-100 (ResNet-18, batch size 16), with and
