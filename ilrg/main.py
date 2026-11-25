@@ -13,6 +13,7 @@ if __name__ == '__main__':
     import torch.nn as nn
     from .defense import params
     from .methods import get_emb
+    from .analysis import ErrorAnalysis, class_errors
     from .models import get_model
     from .datasets import get_dataset
     from .train import Classification, train, iter_train
@@ -137,22 +138,13 @@ if __name__ == '__main__':
     iLRG_leaccs, iLRG_lnaccs, iLRG_irecs = AverageMeter(), AverageMeter(), AverageMeter()
     iDLG_leaccs, GI_leaccs, SVD_leaccs = AverageMeter(), AverageMeter(), AverageMeter()
 
-    mtp_approx1_mses, mtp_approx2_mses, mtp_approx3_mses, mtp_approx4_mses = AverageMeter(), AverageMeter(), AverageMeter(), AverageMeter()
-    mtp_scale_mses, mtp_approx_out_mses, mtp_approx_prob_mses = AverageMeter(), AverageMeter(), AverageMeter()
-    mtp_emb_mses, mtp_out_mses, mtp_prob_mses = AverageMeter(), AverageMeter(), AverageMeter()
-
-    mtp_approx1_mres, mtp_approx2_mres, mtp_approx3_mres, mtp_approx4_mres = AverageMeter(), AverageMeter(), AverageMeter(), AverageMeter()
-    mtp_scale_mres, mtp_approx_out_mres, mtp_approx_prob_mres = AverageMeter(), AverageMeter(), AverageMeter()
-    mtp_emb_mres, mtp_out_mres, mtp_prob_mres = AverageMeter(), AverageMeter(), AverageMeter()
-
-    mtp_emb_sims, mtp_out_sims, mtp_prob_sims = AverageMeter(), AverageMeter(), AverageMeter()
-    mtp_soteria_mses, mtp_soteria_sims = AverageMeter(), AverageMeter()
+    if args.analysis:
+        analysis = ErrorAnalysis(args.ratio, log_file)
 
     if 'custom' in args.distribution:
         mtp_0_cnt, mtp_18_cnt, mtp_92_cnt = AverageMeter(), AverageMeter(), AverageMeter()
 
     target_id = args.start_id
-    max_thresh = 10
 
     for exp_id in range(args.num_tries):
         print_util('Start Experiment {}'.format(exp_id + 1), log_file=log_file)
@@ -228,16 +220,7 @@ if __name__ == '__main__':
                                            model=model)
         cls_rec_probs = []
         if args.analysis:
-            approx1_mses, approx2_mses, approx3_mses, approx4_mses = AverageMeter(), AverageMeter(), AverageMeter(), AverageMeter()
-            scale_mses, approx_out_mses, approx_prob_mses = AverageMeter(), AverageMeter(), AverageMeter()
-            emb_mses, out_mses, prob_mses = AverageMeter(), AverageMeter(), AverageMeter()
-
-            approx1_mres, approx2_mres, approx3_mres, approx4_mres = AverageMeter(), AverageMeter(), AverageMeter(), AverageMeter()
-            scale_mres, approx_out_mres, approx_prob_mres = AverageMeter(), AverageMeter(), AverageMeter()
-            emb_mres, out_mres, prob_mres = AverageMeter(), AverageMeter(), AverageMeter()
-
-            emb_sims, out_sims, prob_sims = AverageMeter(), AverageMeter(), AverageMeter()
-            soteria_mses, soteria_sims = AverageMeter(), AverageMeter()
+            analysis.start_batch()
 
         for i in range(num_classes):
             # Recover class-specific embeddings and probabilities
@@ -254,258 +237,21 @@ if __name__ == '__main__':
             # Calculate MSEs.
             if args.analysis:
                 if len(indexes[i]) > 0:
-                    avg_opt1 = model.fc(cls_embeddings[i])
-                    avg_sfm_opt1 = torch.softmax(avg_opt1, dim=0)
-                    avg_sfm_opt2 = torch.softmax(cls_outs[i], dim=0)
-                    avg_rec_opt = model.fc(cls_rec_emb.to(device))
-                    # print(cls_rec_emb.max(), cls_embeddings[i].max(), w_grad[i].max())
-                    emb_mse = torch.mean((cls_rec_emb.cpu() - cls_embeddings[i].cpu()) ** 2)
-                    emb_mre = torch.abs((cls_rec_emb.cpu() - cls_embeddings[i].cpu()) / cls_embeddings[i].cpu())
-                    emb_mre = torch.where(torch.isinf(emb_mre), torch.full_like(emb_mre, 0), emb_mre)
-                    emb_mre = torch.mean(torch.where(torch.isnan(emb_mre), torch.full_like(emb_mre, 0), emb_mre))
-                    emb_sim = torch.cosine_similarity(cls_rec_emb.cpu(), cls_embeddings[i].cpu(), dim=-1)
-
-                    out_mse = torch.mean((avg_rec_opt.cpu() - cls_outs[i].cpu()) ** 2)
-                    out_mre = torch.abs((avg_rec_opt.cpu() - cls_outs[i].cpu()) / cls_outs[i].cpu())
-                    out_mre = torch.where(torch.isinf(out_mre), torch.full_like(out_mre, 0), out_mre)
-                    out_mre = torch.mean(torch.where(torch.isnan(out_mre), torch.full_like(out_mre, 0), out_mre))
-                    out_sim = torch.cosine_similarity(avg_rec_opt.cpu(), cls_outs[i].cpu(), dim=-1)
-
-                    prob_mse = torch.mean((cls_rec_prob.cpu() - cls_probs[i].cpu()) ** 2)
-                    prob_mre = torch.abs((cls_rec_prob.cpu() - cls_probs[i].cpu()) / cls_probs[i].cpu())
-                    prob_mre = torch.where(torch.isinf(prob_mre), torch.full_like(prob_mre, 0), prob_mre)
-                    prob_mre = torch.mean(torch.where(torch.isnan(prob_mre), torch.full_like(prob_mre, 0), prob_mre))
-                    prob_sim = torch.cosine_similarity(cls_rec_prob.cpu(), cls_probs[i].cpu(), dim=-1)
-
-                    soteria_mse = torch.mean((w_grad[i].cpu() - cls_embeddings[i].cpu()) ** 2)
-                    soteria_sim = torch.cosine_similarity(w_grad[i].cpu(), cls_embeddings[i].cpu(), dim=-1)
-
-                    approx1_mse = torch.mean((cls_wgrad[i].cpu() - cls_bgrad[i].cpu() * cls_embeddings[i].cpu()) ** 2)
-                    approx1_mre = torch.abs(
-                        (cls_wgrad[i].cpu() - cls_bgrad[i].cpu() * cls_embeddings[i].cpu()) / cls_wgrad[i].cpu())
-                    approx1_mre = torch.where(torch.isinf(approx1_mre), torch.full_like(approx1_mre, 0), approx1_mre)
-                    approx1_mre = torch.mean(
-                        torch.where(torch.isnan(approx1_mre), torch.full_like(approx1_mre, 0), approx1_mre))
-
-                    approx2_mse = (w_grad[i].cpu() - len(indexes[i]) / args.num_images * cls_wgrad[i].cpu()) ** 2
-                    approx2_mse = torch.where(torch.isinf(approx2_mse), torch.full_like(approx2_mse, 0), approx2_mse)
-                    approx2_mse = torch.mean(
-                        torch.where(torch.isnan(approx2_mse), torch.full_like(approx2_mse, 0), approx2_mse))
-                    approx2_mre = torch.abs(
-                        (w_grad[i].cpu() - len(indexes[i]) / args.num_images * cls_wgrad[i].cpu()) / w_grad[i].cpu())
-                    approx2_mre = torch.where(torch.isinf(approx2_mre), torch.full_like(approx2_mre, 0), approx2_mre)
-                    approx2_mre = torch.mean(
-                        torch.where(torch.isnan(approx2_mre), torch.full_like(approx2_mre, 0), approx2_mre))
-
-                    approx3_mse = (b_grad[i].cpu() - len(indexes[i]) / args.num_images * cls_bgrad[i].cpu()) ** 2
-                    # if i in [0, 18, 92]:
-                    #     print(b_grad[i], cls_bgrad[i], len(indexes[i]) / args.num_images * cls_bgrad[i])
-                    approx3_mse = torch.where(torch.isinf(approx3_mse), torch.full_like(approx3_mse, 0), approx3_mse)
-                    approx3_mse = torch.mean(
-                        torch.where(torch.isnan(approx3_mse), torch.full_like(approx3_mse, 0), approx3_mse))
-                    approx3_mre = torch.abs(
-                        (b_grad[i].cpu() - len(indexes[i]) / args.num_images * cls_bgrad[i].cpu()) / b_grad[i].cpu())
-                    approx3_mre = torch.where(torch.isinf(approx3_mre), torch.full_like(approx3_mre, 0), approx3_mre)
-                    approx3_mre = torch.mean(
-                        torch.where(torch.isnan(approx3_mre), torch.full_like(approx3_mre, 0), approx3_mre))
-
-                    approx4_mse = torch.mean((avg_sfm_opt1.cpu() - cls_probs[i].cpu()) ** 2)
-                    approx4_mre = torch.abs((avg_sfm_opt1.cpu() - cls_probs[i].cpu()) / cls_probs[i].cpu())
-                    approx4_mre = torch.where(torch.isinf(approx4_mre), torch.full_like(approx4_mre, 0), approx4_mre)
-                    approx4_mre = torch.mean(
-                        torch.where(torch.isnan(approx4_mre), torch.full_like(approx4_mre, 0), approx4_mre))
-
-                    scale_mse = (w_grad[i].cpu() / b_grad[i].cpu() - cls_wgrad[i].cpu() / cls_bgrad[i].cpu()) ** 2
-                    scale_mse = torch.where(torch.isinf(scale_mse), torch.full_like(scale_mse, 0), scale_mse)
-                    scale_mse = torch.mean(
-                        torch.where(torch.isnan(scale_mse), torch.full_like(scale_mse, 0), scale_mse))
-                    scale_mre = torch.abs(
-                        (w_grad[i].cpu() / b_grad[i].cpu() - cls_wgrad[i].cpu() / cls_bgrad[i].cpu()) / (
-                                cls_wgrad[i] / cls_bgrad[i].cpu()))
-                    scale_mre = torch.where(torch.isinf(scale_mre), torch.full_like(scale_mre, 0), scale_mre)
-                    scale_mre = torch.mean(
-                        torch.where(torch.isnan(scale_mre), torch.full_like(scale_mre, 0), scale_mre))
-
-                    approx_out_mse = torch.mean((avg_opt1.cpu() - cls_outs[i].cpu()) ** 2)
-                    approx_out_mre = torch.abs((avg_opt1.cpu() - cls_outs[i].cpu()) / cls_outs[i].cpu())
-                    approx_out_mre = torch.where(torch.isinf(approx_out_mre), torch.full_like(approx_out_mre, 0),
-                                                 approx_out_mre)
-                    approx_out_mre = torch.mean(
-                        torch.where(torch.isnan(approx_out_mre), torch.full_like(approx_out_mre, 0), approx_out_mre))
-
-                    approx_prob_mse = torch.mean((avg_sfm_opt2.cpu() - cls_probs[i].cpu()) ** 2)
-                    approx_prob_mre = torch.abs((avg_sfm_opt2.cpu() - cls_probs[i].cpu()) / cls_probs[i].cpu())
-                    approx_prob_mre = torch.where(torch.isinf(approx_prob_mre), torch.full_like(approx_prob_mre, 0),
-                                                  approx_prob_mre)
-                    approx_prob_mre = torch.mean(
-                        torch.where(torch.isnan(approx_prob_mre), torch.full_like(approx_prob_mre, 0), approx_prob_mre))
-
-                    approx1_mses.update(approx1_mse.item())
-                    approx2_mses.update(approx2_mse.item())
-                    approx3_mses.update(approx3_mse.item())
-                    approx4_mses.update(approx4_mse.item())
-
-                    scale_mses.update(scale_mse.item())
-                    approx_out_mses.update(approx_out_mse.item())
-                    approx_prob_mses.update(approx_prob_mse.item())
-
-                    emb_mses.update(emb_mse.item() if emb_mse.item() < max_thresh else max_thresh)
-                    out_mses.update(out_mse.item())
-                    prob_mses.update(prob_mse.item())
-
-                    emb_sims.update(emb_sim.item())
-                    out_sims.update(out_sim.item())
-                    prob_sims.update(prob_sim.item())
-
-                    approx1_mres.update(approx1_mre.item())
-                    approx2_mres.update(approx2_mre.item())
-                    approx3_mres.update(approx3_mre.item())
-                    approx4_mres.update(approx4_mre.item())
-
-                    scale_mres.update(scale_mre.item())
-                    approx_out_mres.update(approx_out_mre.item())
-                    approx_prob_mres.update(approx_prob_mre.item())
-
-                    emb_mres.update(emb_mre.item())
-                    out_mres.update(out_mre.item())
-                    prob_mres.update(prob_mre.item())
-
-                    soteria_sims.update(soteria_sim.item())
-                    soteria_mses.update(soteria_mse.item())
-
-                    print_util(
-                        'Class %d | Approx1 MSE: %e | Approx2 MSE: %e | Approx3 MSE: %e | Approx4 MSE: %e'
-                        % (i, approx1_mse.item(), approx2_mse.item(), approx3_mse.item(), approx4_mse.item()),
-                        log_file=log_file)
-                    print_util(
-                        'Class %d | Scale MSE: %e | Approx Out MSE: %e | Approx Probabilities MSE: %e'
-                        % (i, scale_mse.item(), approx_out_mse.item(), approx_prob_mse.item()),
-                        log_file=log_file)
-                    print_util(
-                        'Class %d | Embedding MSE: %e | Out MSE: %e | Probabilities MSE: %e'
-                        % (i, emb_mse.item(), out_mse.item(), prob_mse.item()),
-                        log_file=log_file)
-                    print_util(
-                        'Class %d | Embedding Cosine Similarity: %.3f | Out Cosine Similarity: %.3f | Probabilities Cosine Similarity: %.3f'
-                        % (i, emb_sim.item(), out_sim.item(), prob_sim.item()),
-                        log_file=log_file)
-
-                    print_util(
-                        'Class %d | Approx1 MRE: %.3f | Approx2 MRE: %.3f | Approx3 MRE: %.3f | Approx4 MRE: %.3f'
-                        % (i, approx1_mre.item(), approx2_mre.item(), approx3_mre.item(), approx4_mre.item()),
-                        log_file=log_file)
-                    print_util(
-                        'Class %d | Scale MRE: %.3f | Approx Out MRE: %.3f | Approx Probabilities MRE: %.3f'
-                        % (i, scale_mre.item(), approx_out_mre.item(), approx_prob_mre.item()),
-                        log_file=log_file)
-                    print_util(
-                        'Class %d | Embedding MRE: %.3f | Out MRE: %.3f | Probabilities MRE: %.3f '
-                        % (i, emb_mre.item(), out_mre.item(), prob_mre.item()),
-                        log_file=log_file)
-
-                    print_util('Class %d | Soteria Embedding MSE: %e | Soteria Embedding Cosine Similarity: %.3f '
-                               % (i, soteria_mse.item(), soteria_sim.item()),
-                               log_file=log_file)
+                    class_stats = (cls_embeddings[i], cls_outs[i], cls_probs[i], cls_wgrad[i], cls_bgrad[i])
+                    analysis.add_class(i, class_errors(model=model,
+                                                       device=device,
+                                                       share=len(indexes[i]) / args.num_images,
+                                                       rec_emb=cls_rec_emb,
+                                                       rec_prob=cls_rec_prob,
+                                                       w_grad=w_grad[i],
+                                                       b_grad=b_grad[i],
+                                                       class_stats=class_stats))
                 else:
-                    prob_mse = torch.mean(cls_rec_prob ** 2)
-                    print_util(
-                        'Class %d | Probabilities MSE: %e' % (i, prob_mse.item()), log_file=log_file)
-                    # prob_mses.update(prob_mse.item())
+                    analysis.add_missing_class(i, cls_rec_prob)
 
         print_util('***************************************************************', log_file=log_file)
         if args.analysis:
-            approx1_mses.filter(args.ratio)
-            approx2_mses.filter(args.ratio)
-            approx3_mses.filter(args.ratio)
-            approx4_mses.filter(args.ratio)
-            mtp_approx1_mses.update(approx1_mses.avg)
-            mtp_approx2_mses.update(approx2_mses.avg)
-            mtp_approx3_mses.update(approx3_mses.avg)
-            mtp_approx4_mses.update(approx4_mses.avg)
-
-            scale_mses.filter(args.ratio)
-            approx_out_mses.filter(args.ratio)
-            approx_prob_mses.filter(args.ratio)
-            mtp_scale_mses.update(scale_mses.avg)
-            mtp_approx_out_mses.update(approx_out_mses.avg)
-            mtp_approx_prob_mses.update(approx_prob_mses.avg)
-
-            emb_mses.filter(args.ratio)
-            out_mses.filter(args.ratio)
-            prob_mses.filter(args.ratio)
-            mtp_emb_mses.update(emb_mses.avg)
-            mtp_out_mses.update(out_mses.avg)
-            mtp_prob_mses.update(prob_mses.avg)
-
-            emb_sims.filter(args.ratio)
-            out_sims.filter(args.ratio)
-            prob_sims.filter(args.ratio)
-            mtp_emb_sims.update(emb_sims.avg)
-            mtp_out_sims.update(out_sims.avg)
-            mtp_prob_sims.update(prob_sims.avg)
-
-            soteria_sims.filter(args.ratio)
-            soteria_mses.filter(args.ratio)
-            mtp_soteria_sims.update(soteria_sims.avg)
-            mtp_soteria_mses.update(soteria_mses.avg)
-
-            approx1_mres.filter(args.ratio)
-            approx2_mres.filter(args.ratio)
-            approx3_mres.filter(args.ratio)
-            approx4_mres.filter(args.ratio)
-            mtp_approx1_mres.update(approx1_mres.avg)
-            mtp_approx2_mres.update(approx2_mres.avg)
-            mtp_approx3_mres.update(approx3_mres.avg)
-            mtp_approx4_mres.update(approx4_mres.avg)
-
-            scale_mres.filter(args.ratio)
-            approx_out_mres.filter(args.ratio)
-            approx_prob_mres.filter(args.ratio)
-            mtp_scale_mres.update(scale_mres.avg)
-            mtp_approx_out_mres.update(approx_out_mres.avg)
-            mtp_approx_prob_mres.update(approx_prob_mres.avg)
-
-            emb_mres.filter(args.ratio)
-            out_mres.filter(args.ratio)
-            prob_mres.filter(args.ratio)
-            mtp_emb_mres.update(emb_mres.avg)
-            mtp_out_mres.update(out_mres.avg)
-            mtp_prob_mres.update(prob_mres.avg)
-
-            print_util(
-                'Avg Approx1 MSE: %e | Avg Approx2 MSE: %e | Avg Approx3 MSE: %e | Avg Approx4 MSE: %e'
-                % (approx1_mses.avg, approx2_mses.avg, approx3_mses.avg, approx4_mses.avg),
-                log_file=log_file)
-            print_util(
-                'Avg Scale MSE: %e | Avg Approx Out MSE: %e | Avg Approx Probabilities MSE: %e'
-                % (scale_mses.avg, approx_out_mses.avg, approx_prob_mses.avg),
-                log_file=log_file)
-            print_util(
-                'Avg Embedding MSE: %e | Avg Out MSE: %e | Avg Probabilities MSE: %e'
-                % (emb_mses.avg, out_mses.avg, prob_mses.avg),
-                log_file=log_file)
-            print_util(
-                'Avg Embedding Cosine Similarity: %.3f | Avg Out Cosine Similarity: %.3f | Avg Probabilities Cosine Similarity: %.3f '
-                % (emb_sims.avg, out_sims.avg, prob_sims.avg),
-                log_file=log_file)
-
-            print_util(
-                'Avg Approx1 MRE: %.3f | Avg Approx2 MRE: %.3f | Avg Approx3 MRE: %.3f | Avg Approx4 MRE: %.3f'
-                % (approx1_mres.avg, approx2_mres.avg, approx3_mres.avg, approx4_mres.avg),
-                log_file=log_file)
-            print_util(
-                'Avg Scale MRE: %.3f | Avg Approx Out MRE: %.3f | Avg Approx Probabilities MRE: %.3f'
-                % (scale_mres.avg, approx_out_mres.avg, approx_prob_mres.avg),
-                log_file=log_file)
-            print_util(
-                'Avg Embedding MRE: %.3f | Avg Out MRE: %.3f | Avg Probabilities MRE: %.3f '
-                % (emb_mres.avg, out_mres.avg, prob_mres.avg),
-                log_file=log_file)
-
-            print_util(
-                'Avg Soteria Embedding MSE: %e | Avg Soteria Embedding Cosine Similarity: %.3f'
-                % (soteria_mses.avg, soteria_sims.avg),
-                log_file=log_file)
+            analysis.end_batch()
 
         # iLRG label recovery
 
@@ -614,33 +360,7 @@ if __name__ == '__main__':
             iDLG_leaccs.avg, GI_leaccs.avg, SVD_leaccs.avg) + opt_string
     print_util(opt_string, log_file=log_file)
     if args.analysis:
-        print_util(
-            'Mean Avg Approx1 MSE: %e | Mean Avg Approx2 MSE: %e | Mean Avg Approx3 MSE: %e | Mean Avg Approx4 MSE: %e' % (
-                mtp_approx1_mses.avg, mtp_approx2_mses.avg, mtp_approx3_mses.avg, mtp_approx4_mses.avg),
-            log_file=log_file)
-        print_util(
-            'Mean Avg Approx1 MRE: %.3f | Mean Avg Approx2 MRE: %.3f | Mean Avg Approx3 MRE: %.3f | Mean Avg Approx4 MRE: %.3f' % (
-                mtp_approx1_mres.avg, mtp_approx2_mres.avg, mtp_approx3_mres.avg, mtp_approx4_mres.avg),
-            log_file=log_file)
-
-        print_util('Mean Avg Scale MSE: %e | Mean Avg Approx Out MSE: %e | Mean Avg Approx Probabilities MSE: %e' % (
-            mtp_scale_mses.avg, mtp_approx_out_mses.avg, mtp_approx_prob_mses.avg), log_file=log_file)
-        print_util(
-            'Mean Avg Scale MRE: %.3f | Mean Avg Approx Out MRE: %.3f | Mean Avg Approx Probabilities MRE: %.3f' % (
-                mtp_scale_mres.avg, mtp_approx_out_mres.avg, mtp_approx_prob_mres.avg), log_file=log_file)
-
-        print_util(
-            'Mean Avg Embedding MSE: %e | Mean Avg Out MSE: %e | Mean Avg Probabilities MSE: %e' % (
-                mtp_emb_mses.avg, mtp_out_mses.avg, mtp_prob_mses.avg), log_file=log_file)
-        print_util('Mean Avg Embedding MRE: %.3f | Mean Avg Out MRE: %.3f | Mean Avg Probabilities MRE: %.3f' % (
-            mtp_emb_mres.avg, mtp_out_mres.avg, mtp_prob_mres.avg), log_file=log_file)
-        print_util(
-            'Mean Avg Embedding Cosine Similarity: %.3f | Mean Avg Out Cosine Similarity: %.3f | Mean Avg Probability Cosine Similarity: %.3f' % (
-                mtp_emb_sims.avg, mtp_out_sims.avg, mtp_prob_sims.avg), log_file=log_file)
-
-        print_util(
-            'Mean Avg Soteria Embedding MSE: %e | Mean Avg Soteria Embedding Cosine Similarity: %.3f ' % (
-                mtp_soteria_mses.avg, mtp_soteria_sims.avg), log_file=log_file)
+        analysis.print_summary()
     if 'custom' in args.distribution:
         print_util('Mean Rec Instances: Class 0-%d, Class 18-%d, Class 92-%d' % (
             mtp_0_cnt.avg, mtp_18_cnt.avg, mtp_92_cnt.avg), log_file=log_file)
